@@ -10,6 +10,7 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 | Q1.9–Q1.15 (Section B) | C | (this session) | See "Decisions B" below | See "Open unknowns / assumptions B" below | 1.3, 1.4, 1.5 |
 | Q1.16–Q1.19 (Section C) | C | (this session) | See "Decisions C" below | See "Open unknowns / assumptions C" below | 1.4, 1.6, 1.7 |
 | Q1.20–Q1.22 (Section D) | C | (this session) | See "Decisions D" below | See "Open unknowns / assumptions D" below | 1.3, 1.4, 1.5 |
+| Review of Artifact 1 (affects Q1.11, Q1.12, Q1.13, Q1.15, Q1.16, Q1.18, Q1.19, Q1.20, Q1.21, Q1.22) | C | (this session) | See "Decisions R" below | See "Open unknowns R" below | 1.1–1.7 |
 
 ### Decisions A
 
@@ -81,6 +82,42 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 |---|---|---|---|---|
 | D1 | **Decided:** allow list removed. Every production change needs human approval | Decision | Team | Revisit after V1 if approval fatigue appears |
 | D3 | Retention period for incident records | Unknown | TBD | Layer 2/7 |
+
+### Decisions R (review of Artifact 1)
+
+- **Contradictions fixed:** deletion and irreversible changes are prohibited in V1 (checkpoint rows removed). "Act outside the affected service" means a write; reading related services is allowed. Problem statement no longer promises "no risk"; it says no change without approval, and every change has an undo path.
+- **Recovery first:** V1 restores service before root cause by reverting the most recent change to the last known-good version, with approval.
+- **Permanent fix in V1 (team decision, revised):** after recovery, the platform proposes a permanent fix, proves it in a non-production copy, a different model reviews it, and the platform applies it only after human approval, then verifies the same signals again. If the fix fails proof or review, cannot be reproduced, or is declined, the service stays on the reverted version and the incident closes with the fix as a recommendation. If errors return after the fix, the fix is undone and the incident escalates.
+- **Non-production reproduction** is not required for a revert (optional check only). It is required to prove a permanent fix.
+- **Approval timeout:** if the approver does not answer in a set time, the backup approver is asked. Silence is never approval.
+- **Severity** comes first from the alert; human confirms in parallel; it does not block.
+- **Baseline fallback:** timed manual run of the reference scenario if no past incidents exist.
+- **Cost per incident** added as an outcome measure.
+- **Reviewer** uses a different model from the main agent.
+- **E3 decision models (researched):** Type 1 / Type 2 decisions (one-way / two-way door) decide how careful an action must be: Type 2 (reversible) actions such as a revert need approval; Type 1 (irreversible) actions are prohibited in V1. System 1 / System 2 thinking decides escalation: fast fixed rules first, then a rubric with context and guidance; a gate (low score, new kind of incident, conflicting evidence) sends the incident to a human.
+- **E5 takeover:** a human can stop the platform or take over at any step.
+- **E6:** related alerts are grouped into one incident.
+- **E7:** a self-recovered incident is marked "recovered without action", watched, and still gets a root-cause report.
+- **E8 (confirmed):** platform never reads secret values (name + changed/unchanged via fingerprint only); secrets and personal data removed before evidence is stored, shown, or sent to a model; record keeps source location + cleaned extract.
+- **E9:** the approver can be the author of the change.
+- **E10:** the platform listens for alert events and does not depend on any channel; findings go to the alert's channel and the incident record.
+- **E11 (confirmed):** add wrong-change rate (revert or fix) and escalation rate as safety measures.
+- **Owners named** for every assumption, by the layer where each is validated (see artifact appendix).
+
+### Open unknowns R
+
+| # | Item | Type | Owner | Validate when |
+|---|---|---|---|---|
+| E1 | On-call schedule exists and can be read | Assumption | Chirag | Layer 3 |
+| E2 | Past incidents and knowledge documents are accurate and current | Assumption | Irfan | Layer 10 |
+| E3 | Exact escalation rules, rubric content, and gate limits. Candidate for the System 2 rubric/gate: a schema-constrained decision model (e.g. GLiNER2.5-Decide; "Jev" family), named in Layer 9/10, not here (Layer 1 is technology-free). Use as one gate signal next to the rules, never the only decider; unsure output = escalate. Validate on our incident fixtures | Unknown | Dhanush (with Irfan for model choice) | Layer 9 / Layer 10 |
+| E4 | "Normal level" for the recovery check; low-traffic handling | Unknown | Rinisha | Layer 11 |
+| E6 | Alert-grouping rule | Unknown | Manish | Layer 7 |
+| E7 | Watch period for a self-recovered incident | Unknown | Dhanush | Layer 8 |
+| E8 | Secrets and personal data handling: check against threats | Decision | Chirag | Layer 5 |
+| E11 | Wrong-change rate and escalation rate: set targets | Decision | Irfan | Layer 12 |
+| F1 | Approval timeout values and backup approver order | Unknown | Rinisha | Layer 11 |
+| F2 | Platform cost per incident | Unknown | Irfan | Layer 10 |
 
 ### Where Claude and ChatGPT disagreed
 _(none yet — only one agent used so far)_

@@ -24,7 +24,7 @@ th{background:var(--card)}
 .no{border-left:4px solid var(--bad);background:var(--bad-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
 ul,ol{padding-left:22px}li{margin:2px 0}
 .tag{font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 6px;color:var(--muted)}
-/* svg */
+.checks{list-style:none;padding-left:0}
 svg text{fill:var(--fg);font-family:system-ui,sans-serif}
 svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
 svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
@@ -35,6 +35,7 @@ svg .lane{fill:none;stroke:var(--line)}
 svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
 svg .dash{stroke:var(--muted);stroke-width:1.2;fill:none;stroke-dasharray:5 4}
 svg .badln{stroke:var(--bad);stroke-width:1.5;fill:none;stroke-dasharray:5 4}
+svg .okln{stroke:var(--ok);stroke-width:1.5;fill:none;stroke-dasharray:5 4}
 svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
 svg .ac{fill:var(--muted)}
 @media print{body{background:#fff}.fig{break-inside:avoid}}
@@ -43,13 +44,12 @@ svg .ac{fill:var(--muted)}
 <body>
 <main>
 <h1>Artifact 1 - Product Requirements Document</h1>
-<p class="sub">Building an AI SRE &middot; Layer 1: Problem Discovery &middot; Built from: none (this layer begins the worksheet)</p>
+<p class="sub">Building an AI SRE &middot; Layer 1: Problem Discovery &middot; <b>Built from.</b> None. This layer begins the worksheet.</p>
 <table>
 <tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
-<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>&nbsp;</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Chirag, Manish, Dhanush, Rinisha, Irfan</td></tr>
 </table>
 <p class="qs">Writing style: Simplified Technical English (roughly). No technology, tool, or vendor is named in this document. Decisions come from <code>conversation-log.md</code>. Every assumption is <b>provisional</b>.</p>
-
 
 <h3>Required sections</h3>
 <table>
@@ -68,7 +68,7 @@ svg .ac{fill:var(--muted)}
 <p class="qs">Answers: Q1.1, Q1.3, Q1.4, Q1.7, Q1.8</p>
 
 <p><b>Alert systems already work.</b> When a service fails, the existing alert system sends a message to people. The message can be an email, a chat message, or a ticket.</p>
-<p><b>The unsolved problem is what happens after the alert.</b> The engineer must find the cause by hand. This takes a long time, and the work is tiring.</p>
+<p><b>The unsolved problem is what happens after the alert.</b> The engineer must restore the service and find the cause by hand. This takes a long time, and the work is tiring.</p>
 
 <h3>What the engineer does today</h3>
 <ol>
@@ -78,6 +78,7 @@ svg .ac{fill:var(--muted)}
 <li>Look at past incidents and knowledge documents.</li>
 <li>Join all of this information in their head.</li>
 <li>Form a hypothesis about the cause.</li>
+<li>Decide how to restore the service.</li>
 </ol>
 
 <div class="fig">
@@ -90,19 +91,20 @@ svg .ac{fill:var(--muted)}
 <rect x="330" y="32" width="120" height="50" rx="6" class="hum"/><text x="390" y="55">Check recent</text><text x="390" y="69">changes</text>
 <rect x="490" y="32" width="120" height="50" rx="6" class="hum"/><text x="550" y="55">Read past incidents</text><text x="550" y="69">and documents</text>
 <rect x="650" y="32" width="120" height="50" rx="6" class="hum"/><text x="710" y="55">Join information</text><text x="710" y="69">by hand</text>
-<rect x="810" y="32" width="170" height="50" rx="6" class="bad"/><text x="895" y="55">Hypothesis after</text><text x="895" y="69">hours of work</text>
+<rect x="810" y="32" width="170" height="50" rx="6" class="bad"/><text x="895" y="55">Recovery after</text><text x="895" y="69">hours of work</text>
 </g>
 <path class="ln" d="M130,57 H168" marker-end="url(#a1)"/><path class="ln" d="M290,57 H328" marker-end="url(#a1)"/><path class="ln" d="M450,57 H488" marker-end="url(#a1)"/><path class="ln" d="M610,57 H648" marker-end="url(#a1)"/><path class="ln" d="M770,57 H808" marker-end="url(#a1)"/>
 
-<text x="10" y="140" class="md" font-weight="600">WITH THE PLATFORM: the platform does the gathering, the human decides</text>
+<text x="10" y="140" class="md" font-weight="600">WITH THE PLATFORM: recovery first, then the root cause and a fix. The human approves.</text>
 <g class="sm" text-anchor="middle">
 <rect x="10" y="152" width="120" height="50" rx="6" class="box"/><text x="70" y="175">Alert arrives</text>
-<rect x="170" y="152" width="200" height="50" rx="6" class="uc"/><text x="270" y="172">Platform collects evidence</text><text x="270" y="186">from every source</text>
-<rect x="410" y="152" width="200" height="50" rx="6" class="uc"/><text x="510" y="172">Platform states a hypothesis</text><text x="510" y="186">with evidence and confidence</text>
-<rect x="650" y="152" width="140" height="50" rx="6" class="hum"/><text x="720" y="172">Human decides</text><text x="720" y="186">and approves</text>
-<rect x="830" y="152" width="150" height="50" rx="6" class="okb"/><text x="905" y="172">Verified recovery</text>
+<rect x="160" y="152" width="170" height="50" rx="6" class="uc"/><text x="245" y="172">Platform collects</text><text x="245" y="186">evidence</text>
+<rect x="360" y="152" width="170" height="50" rx="6" class="uc"/><text x="445" y="172">Platform proposes revert</text><text x="445" y="186">with evidence</text>
+<rect x="560" y="152" width="120" height="50" rx="6" class="hum"/><text x="620" y="172">Human</text><text x="620" y="186">approves</text>
+<rect x="710" y="152" width="120" height="50" rx="6" class="okb"/><text x="770" y="172">Verified</text><text x="770" y="186">recovery</text>
+<rect x="860" y="152" width="120" height="50" rx="6" class="uc"/><text x="920" y="172">Root cause,</text><text x="920" y="186">approved fix</text>
 </g>
-<path class="ln" d="M130,177 H168" marker-end="url(#a1)"/><path class="ln" d="M370,177 H408" marker-end="url(#a1)"/><path class="ln" d="M610,177 H648" marker-end="url(#a1)"/><path class="ln" d="M790,177 H828" marker-end="url(#a1)"/>
+<path class="ln" d="M130,177 H158" marker-end="url(#a1)"/><path class="ln" d="M330,177 H358" marker-end="url(#a1)"/><path class="ln" d="M530,177 H558" marker-end="url(#a1)"/><path class="ln" d="M680,177 H708" marker-end="url(#a1)"/><path class="ln" d="M830,177 H858" marker-end="url(#a1)"/>
 <text x="10" y="236" class="lbl">Yellow = human work. Blue = platform work. Green = good result. Red = slow result.</text>
 </svg>
 <p class="cap">Figure 1. The incident flow today and with the platform.</p>
@@ -134,16 +136,16 @@ svg .ac{fill:var(--muted)}
 <li>The real cause stays. The outage can become worse.</li>
 <li>An unneeded fix can cause new problems.</li>
 </ul>
-<div class="note"><b>Problem statement.</b> After an alert, engineers spend too much time to collect scattered evidence by hand and to find the cause. A wrong diagnosis makes the incident worse. The product must reduce this time and increase the accuracy of the diagnosis, without risk to production.</div>
+<div class="note"><b>Problem statement.</b> After an alert, engineers spend too much time collecting scattered evidence by hand, restoring the service, and finding the cause. A wrong diagnosis makes the incident worse. The product must reduce the time to recover and increase the accuracy of the diagnosis. It must make no production change without human approval, and every change must have an undo path.</div>
 
 <!-- ============ 1.2 ============ -->
 <h2><span class="sec">1.2</span>Target users</h2>
 <p class="qs">Answers: Q1.2, Q1.3, Q1.11</p>
 <table>
 <tr><th>User</th><th>Need</th><th>Role with the platform</th></tr>
-<tr><td><b>On-call engineer</b> (first person to get the page)</td><td>Find the cause fast. Sleep and focus are protected.</td><td>Reads findings. Confirms severity. Can approve a fix.</td></tr>
-<tr><td><b>Service owner</b> (team manager of the failed service)</td><td>Know that the incident has an owner and a plan.</td><td>Receives the incident. Can approve a fix.</td></tr>
-<tr><td><b>Approver</b></td><td>Safe production.</td><td>This is <b>either</b> the on-call engineer <b>or</b> the service owner. One of them must approve every production change.</td></tr>
+<tr><td><b>On-call engineer</b> (first person to get the page)</td><td>Restore the service fast. Sleep and focus are protected.</td><td>Reads findings. Confirms severity. Can approve a revert. Can stop the platform or take over at any step.</td></tr>
+<tr><td><b>Service owner</b> (team manager of the failed service)</td><td>Know that the incident has an owner and a plan.</td><td>Receives the incident. Can approve a revert. Is the backup approver.</td></tr>
+<tr><td><b>Approver</b></td><td>Safe production.</td><td>This is <b>either</b> the on-call engineer <b>or</b> the service owner. One of them must approve every production change. The approver can be the author of the change.</td></tr>
 <tr><td><b>Engineering management</b> (stakeholder)</td><td>Proof that the platform is worth the investment.</td><td>Reads the outcome measures (section 1.6).</td></tr>
 </table>
 
@@ -151,7 +153,7 @@ svg .ac{fill:var(--muted)}
 <ul>
 <li>The platform keeps a maintained list: <b>service &rarr; owning team &rarr; manager &rarr; team members</b>.</li>
 <li>When an alert arrives, the platform looks up the failed service in this list.</li>
-<li>Inside the team, the platform sends the incident to the owning team and to the person on call. It also considers who is available.</li>
+<li>The platform reads the on-call schedule. It sends the incident to the owning team and to the person on call.</li>
 <li>The author of a recent change is shown <b>as evidence only</b>. The platform does not give the incident to this person.</li>
 </ul>
 <div class="note"><b>Unmapped services.</b> A service can have no owner in the list, or the list can be old. The fallback is not decided yet (see assumption A3).</div>
@@ -163,64 +165,100 @@ svg .ac{fill:var(--muted)}
 <div class="fig">
 <svg viewBox="0 0 1100 330" role="img" aria-label="Swimlane diagram of the incident journey">
 <defs><marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<!-- lanes -->
 <g class="lane"><rect x="0" y="10" width="1100" height="70"/><rect x="0" y="80" width="1100" height="70"/><rect x="0" y="150" width="1100" height="70"/><rect x="0" y="220" width="1100" height="70"/></g>
-<g class="md" font-weight="600"><text x="8" y="40">Alert source</text><text x="8" y="110">Platform</text><text x="8" y="180">Reviewer</text><text x="8" y="196" class="lbl" font-weight="400">(new context)</text><text x="8" y="250">Human</text><text x="8" y="266" class="lbl" font-weight="400">(approver)</text></g>
-<!-- boxes: width 74 h 44; cx = 65+90*i -->
+<g class="md" font-weight="600"><text x="8" y="40">Alert source</text><text x="8" y="110">Platform</text><text x="8" y="180">Reviewer</text><text x="8" y="196" class="lbl" font-weight="400">(different model)</text><text x="8" y="250">Human</text><text x="8" y="266" class="lbl" font-weight="400">(approver)</text></g>
 <g class="sm" text-anchor="middle">
-<rect x="118" y="23" width="74" height="44" rx="6" class="box"/><text x="155" y="42">1 Raise</text><text x="155" y="56">alert</text>
-<rect x="208" y="93" width="74" height="44" rx="6" class="uc"/><text x="245" y="112">2 Find</text><text x="245" y="126">owner</text>
-<rect x="298" y="93" width="74" height="44" rx="6" class="uc"/><text x="335" y="112">3 Collect</text><text x="335" y="126">evidence</text>
-<rect x="388" y="93" width="74" height="44" rx="6" class="uc"/><text x="425" y="112">4 Form</text><text x="425" y="126">hypothesis</text>
-<rect x="478" y="233" width="74" height="44" rx="6" class="hum"/><text x="515" y="252">5 Confirm</text><text x="515" y="266">severity</text>
-<rect x="568" y="93" width="74" height="44" rx="6" class="uc"/><text x="605" y="108">6 Propose</text><text x="605" y="121">and prove</text><text x="605" y="134">fix</text>
-<rect x="658" y="163" width="74" height="44" rx="6" class="uc"/><text x="695" y="182">7 Review</text><text x="695" y="196">fix</text>
-<rect x="748" y="233" width="74" height="44" rx="6" class="hum"/><text x="785" y="252">8 Approve</text><text x="785" y="266">fix</text>
-<rect x="838" y="93" width="74" height="44" rx="6" class="uc"/><text x="875" y="112">9 Apply</text><text x="875" y="126">fix</text>
-<rect x="928" y="93" width="74" height="44" rx="6" class="uc"/><text x="965" y="112">10 Watch</text><text x="965" y="126">signals</text>
-<rect x="1018" y="93" width="74" height="44" rx="6" class="okb"/><text x="1055" y="112">11 Close +</text><text x="1055" y="126">summary</text>
+<rect x="118" y="23" width="80" height="44" rx="6" class="box"/><text x="158" y="42">1 Raise</text><text x="158" y="56">alert</text>
+<rect x="216" y="93" width="80" height="44" rx="6" class="uc"/><text x="256" y="112">2 Group alerts,</text><text x="256" y="126">find owner</text>
+<rect x="314" y="93" width="80" height="44" rx="6" class="uc"/><text x="354" y="112">3 Collect</text><text x="354" y="126">evidence</text>
+<rect x="412" y="233" width="80" height="44" rx="6" class="hum"/><text x="452" y="252">4 Confirm</text><text x="452" y="266">severity</text>
+<rect x="510" y="93" width="80" height="44" rx="6" class="uc"/><text x="550" y="112">5 Propose</text><text x="550" y="126">revert</text>
+<rect x="608" y="163" width="80" height="44" rx="6" class="uc"/><text x="648" y="182">6 Review</text><text x="648" y="196">proposal</text>
+<rect x="706" y="233" width="80" height="44" rx="6" class="hum"/><text x="746" y="252">7 Approve</text><text x="746" y="266">revert</text>
+<rect x="804" y="93" width="80" height="44" rx="6" class="uc"/><text x="844" y="112">8 Apply</text><text x="844" y="126">revert</text>
+<rect x="902" y="93" width="80" height="44" rx="6" class="uc"/><text x="942" y="112">9 Watch</text><text x="942" y="126">signals</text>
+<rect x="1000" y="93" width="80" height="44" rx="6" class="okb"/><text x="1040" y="112">10 Recovered,</text><text x="1040" y="126">find cause</text>
 </g>
-<!-- arrows (elbow) -->
 <g class="ln">
-<path d="M155,67 V115 H206" marker-end="url(#a2)"/>
-<path d="M282,115 H296" marker-end="url(#a2)"/>
-<path d="M372,115 H386" marker-end="url(#a2)"/>
-<path d="M462,115 H470 V255 H476" marker-end="url(#a2)"/>
-<path d="M552,255 H560 V115 H566" marker-end="url(#a2)"/>
-<path d="M642,115 H650 V185 H656" marker-end="url(#a2)"/>
-<path d="M732,185 H740 V255 H746" marker-end="url(#a2)"/>
-<path d="M822,255 H830 V115 H836" marker-end="url(#a2)"/>
-<path d="M912,115 H926" marker-end="url(#a2)"/>
-<path d="M1002,115 H1016" marker-end="url(#a2)"/>
+<path d="M158,67 V115 H214" marker-end="url(#a2)"/>
+<path d="M296,115 H312" marker-end="url(#a2)"/>
+<path d="M394,115 H508" marker-end="url(#a2)"/>
+<path d="M590,115 H599 V185 H606" marker-end="url(#a2)"/>
+<path d="M688,185 H697 V255 H704" marker-end="url(#a2)"/>
+<path d="M786,255 H795 V115 H802" marker-end="url(#a2)"/>
+<path d="M884,115 H900" marker-end="url(#a2)"/>
+<path d="M982,115 H998" marker-end="url(#a2)"/>
 </g>
-<text x="8" y="312" class="lbl">Every step writes to the provenance record. Any step can end in "escalate to human" (see Figure 4).</text>
+<path class="dash" d="M354,137 V255 H410" marker-end="url(#a2)"/>
+<text x="362" y="200" class="lbl">in parallel,</text><text x="362" y="213" class="lbl">does not block</text>
+<text x="8" y="312" class="lbl">Every step writes to the provenance record. A human can stop or take over at any step. Any step can end in "escalate to human" (see Figure 4).</text>
 </svg>
-<p class="cap">Figure 2. Swimlane diagram of the incident journey. Yellow = human. Blue = platform. Green = end.</p>
+<p class="cap">Figure 2. Swimlane diagram, phase 1: recovery. Yellow = human. Blue = platform. Green = service recovered.</p>
+</div>
+
+<div class="fig">
+<svg viewBox="0 0 1100 250" role="img" aria-label="Swimlane diagram of the permanent fix phase">
+<defs><marker id="a2b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g class="lane"><rect x="0" y="10" width="1100" height="70"/><rect x="0" y="80" width="1100" height="70"/><rect x="0" y="150" width="1100" height="70"/></g>
+<g class="md" font-weight="600"><text x="8" y="40">Platform</text><text x="8" y="110">Reviewer</text><text x="8" y="126" class="lbl" font-weight="400">(different model)</text><text x="8" y="180">Human</text><text x="8" y="196" class="lbl" font-weight="400">(approver)</text></g>
+<g class="sm" text-anchor="middle">
+<rect x="118" y="23" width="80" height="44" rx="6" class="uc"/><text x="158" y="42">11 Propose</text><text x="158" y="56">permanent fix</text>
+<rect x="216" y="23" width="80" height="44" rx="6" class="uc"/><text x="256" y="38">12 Prove fix</text><text x="256" y="51">in non-prod</text><text x="256" y="64">copy</text>
+<rect x="314" y="93" width="80" height="44" rx="6" class="uc"/><text x="354" y="112">13 Review</text><text x="354" y="126">fix</text>
+<rect x="412" y="163" width="80" height="44" rx="6" class="hum"/><text x="452" y="182">14 Approve</text><text x="452" y="196">fix</text>
+<rect x="510" y="23" width="80" height="44" rx="6" class="uc"/><text x="550" y="42">15 Apply</text><text x="550" y="56">fix</text>
+<rect x="608" y="23" width="80" height="44" rx="6" class="uc"/><text x="648" y="42">16 Watch</text><text x="648" y="56">signals</text>
+<rect x="706" y="23" width="80" height="44" rx="6" class="okb"/><text x="746" y="42">17 Close</text><text x="746" y="56">with report</text>
+</g>
+<g class="ln">
+<path d="M198,45 H214" marker-end="url(#a2b)"/>
+<path d="M296,45 H305 V115 H312" marker-end="url(#a2b)"/>
+<path d="M394,115 H403 V185 H410" marker-end="url(#a2b)"/>
+<path d="M492,185 H501 V45 H508" marker-end="url(#a2b)"/>
+<path d="M590,45 H606" marker-end="url(#a2b)"/>
+<path d="M688,45 H704" marker-end="url(#a2b)"/>
+</g>
+<text x="8" y="242" class="lbl">Starts after step 10. If the human declines the fix, the incident closes with the fix as a recommendation only.</text>
+</svg>
+<p class="cap">Figure 2b. Swimlane diagram, phase 2: permanent fix. The fix is proven, reviewed, and approved before it is applied.</p>
 </div>
 
 <h3>The journey in the reference scenario</h3>
 <ol>
 <li>A deployment changes a configuration value. The application starts to return HTTP 500 errors.</li>
-<li>The monitoring system detects the incident and sends an alert.</li>
+<li>The monitoring system detects the incident and sends an alert. The alert gives the initial severity.</li>
+<li>The platform listens for alert events. It groups related alerts into one incident.</li>
 <li>The platform finds the owner of the service and the person on call.</li>
 <li>The platform collects the alert details, logs, metrics, recent changes (with the configuration difference), past incidents, and knowledge documents.</li>
-<li>The platform states a hypothesis, for example: "The new configuration value caused the errors." It shows the evidence and a confidence level.</li>
-<li>A human confirms the severity.</li>
-<li>The platform proposes a fix and shows that the fix works in a non-production copy of the application.</li>
-<li>A second agent with a new context reviews the fix and looks for faults.</li>
-<li>A human approves the fix. The fix must have a defined way to undo it.</li>
-<li>The platform applies the fix.</li>
-<li>The platform watches the same signals that caused the alert. It checks that they stay healthy for a set period.</li>
-<li>The platform closes the incident and writes a summary with the full audit trail.</li>
+<li>In parallel, a human confirms or changes the severity. The platform does not wait for this step.</li>
+<li>The platform finds that the errors started after the recent change. It proposes to <b>revert the change</b> to the last known-good version. It shows the evidence and a confidence level.</li>
+<li>A reviewer that uses a <b>different model</b>, with a new context, reviews the proposal and looks for faults.</li>
+<li>A human approves the revert. If the approver does not answer in a set time, the platform asks the backup approver.</li>
+<li>The platform applies the revert.</li>
+<li>The platform watches the same signals that caused the alert. It compares them to the normal level before the incident, for a set period.</li>
+<li>The service is recovered. The platform continues to find the root cause.</li>
+<li>The platform proposes a permanent fix for the root cause. In the reference scenario, this is a correct configuration value.</li>
+<li>The platform proves the fix in a non-production copy of the application.</li>
+<li>The reviewer that uses a different model reviews the fix.</li>
+<li>A human approves the fix. The fix must have an undo path.</li>
+<li>The platform applies the fix. It watches the same signals again for the set period.</li>
+<li>The platform closes the incident. It writes a report with the root cause, the fix, and the full audit trail.</li>
 </ol>
 
 <h3>When something goes wrong</h3>
 <table>
 <tr><th>Condition</th><th>What the platform does</th></tr>
-<tr><td>Evidence is not enough</td><td>Says clearly that it cannot find the cause. Hands over to a human. Shows what it checked and what is missing.</td></tr>
-<tr><td>The fix fails the non-production proof or the review</td><td>Does not apply the fix. Reports the failure. Escalates to a human.</td></tr>
-<tr><td>Errors continue after the fix is applied</td><td>Uses the undo path. Escalates to a human.</td></tr>
+<tr><td>Evidence is not enough (escalation rules or rubric are met)</td><td>Says clearly that it cannot find the cause. Hands over to a human. Shows what it checked and what is missing.</td></tr>
+<tr><td>No recent change matches the errors, or the change cannot be reverted</td><td>Does not propose a revert. Hands over the findings. Escalates to a human.</td></tr>
+<tr><td>The review rejects the proposal</td><td>Does not apply the revert. Reports why. Escalates to a human.</td></tr>
+<tr><td>The approver and the backup approver do not answer in the set time</td><td>Does not apply the revert. Escalates.</td></tr>
+<tr><td>Errors continue after the revert</td><td>Reports that the change was not the cause. Keeps the undo path ready. Escalates to a human.</td></tr>
+<tr><td>The incident recovers by itself during the investigation</td><td>Marks the incident "recovered without action". Watches the signals for the set period. Finishes the root-cause report.</td></tr>
+<tr><td>The fix fails in the non-production copy, the copy cannot reproduce the problem, or the review rejects the fix</td><td>Does not apply the fix. The service stays on the reverted version. Closes the incident with the fix as a recommendation. Tells the owner.</td></tr>
+<tr><td>The human declines the fix</td><td>Does not apply the fix. Closes the incident with the fix as a recommendation.</td></tr>
+<tr><td>Errors return after the fix is applied</td><td>Uses the undo path of the fix (back to the recovered state). Escalates to a human.</td></tr>
 <tr><td>The investigation reaches its limit of time, steps, or cost</td><td>Stops. Escalates to a human.</td></tr>
+<tr><td>A human stops the platform or takes over</td><td>Stops all actions at once. Hands over the incident record.</td></tr>
 </table>
 
 <h3>How information is kept during the incident</h3>
@@ -229,7 +267,14 @@ svg .ac{fill:var(--muted)}
 <li>The record is kept in a separate store, so people can trace and audit every claim.</li>
 <li>There is one record for each incident. People and the platform can only add entries. They cannot change old entries.</li>
 <li>The record stays after the incident closes.</li>
-<li>The record must <b>never</b> contain sensitive values or secrets.</li>
+</ul>
+
+<h3>Secrets and personal data in evidence</h3>
+<ul>
+<li>The platform must not read the value of a secret. It reads only the name of the secret and whether the value changed.</li>
+<li>To see if a secret changed, the platform compares a fingerprint of the old and new value. It does not compare the values.</li>
+<li>The platform removes secrets and personal data from logs and other evidence before it stores the evidence, shows it, or gives it to a model.</li>
+<li>The provenance record keeps the location of each source and the cleaned extract. An engineer with the correct access can open the original source.</li>
 </ul>
 
 <!-- ============ 1.4 ============ -->
@@ -237,67 +282,70 @@ svg .ac{fill:var(--muted)}
 <p class="qs">Answers: Q1.5, Q1.6, Q1.9, Q1.10, Q1.12, Q1.13, Q1.16, Q1.17</p>
 
 <div class="fig">
-<svg viewBox="0 0 900 540" role="img" aria-label="Use case diagram">
+<svg viewBox="0 0 900 610" role="img" aria-label="Use case diagram">
 <defs><marker id="a3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
-<rect x="250" y="8" width="400" height="524" rx="10" fill="none" stroke="var(--line)" stroke-width="1.5"/>
+<rect x="250" y="8" width="400" height="594" rx="10" fill="none" stroke="var(--line)" stroke-width="1.5"/>
 <text x="450" y="28" text-anchor="middle" class="md" font-weight="600">AI SRE platform (V1)</text>
-<!-- use cases -->
-<g class="sm" text-anchor="middle">
-<ellipse cx="450" cy="70" rx="150" ry="22" class="uc"/><text x="450" y="74" class="md">UC1 Receive alert and find owner</text>
-<ellipse cx="450" cy="130" rx="150" ry="22" class="uc"/><text x="450" y="134" class="md">UC2 Investigate and gather evidence</text>
-<ellipse cx="450" cy="190" rx="150" ry="22" class="uc"/><text x="450" y="194" class="md">UC3 Explain hypothesis with evidence</text>
-<ellipse cx="450" cy="250" rx="150" ry="22" class="uc"/><text x="450" y="254" class="md">UC4 Propose and prove a fix</text>
-<ellipse cx="450" cy="310" rx="150" ry="22" class="hum"/><text x="450" y="314" class="md">UC5 Approve and apply fix</text>
-<ellipse cx="450" cy="370" rx="150" ry="22" class="uc"/><text x="450" y="374" class="md">UC6 Verify recovery</text>
-<ellipse cx="450" cy="430" rx="150" ry="22" class="bad"/><text x="450" y="434" class="md">UC7 Escalate when evidence is thin</text>
-<ellipse cx="450" cy="490" rx="150" ry="22" class="uc"/><text x="450" y="494" class="md">UC8 Review the audit record</text>
+<g text-anchor="middle" class="md">
+<ellipse cx="450" cy="60" rx="150" ry="22" class="uc"/><text x="450" y="64">UC1 Receive and group alerts, find owner</text>
+<ellipse cx="450" cy="116" rx="150" ry="22" class="uc"/><text x="450" y="120">UC2 Investigate and gather evidence</text>
+<ellipse cx="450" cy="172" rx="150" ry="22" class="uc"/><text x="450" y="176">UC3 Explain hypothesis with evidence</text>
+<ellipse cx="450" cy="228" rx="150" ry="22" class="uc"/><text x="450" y="232">UC4 Propose recovery (revert)</text>
+<ellipse cx="450" cy="284" rx="150" ry="22" class="hum"/><text x="450" y="288">UC5 Approve and apply (revert or fix)</text>
+<ellipse cx="450" cy="340" rx="150" ry="22" class="uc"/><text x="450" y="344">UC6 Verify recovery</text>
+<ellipse cx="450" cy="396" rx="150" ry="22" class="bad"/><text x="450" y="400">UC7 Escalate by rules and rubric</text>
+<ellipse cx="450" cy="452" rx="150" ry="22" class="uc"/><text x="450" y="456">UC8 Find root cause, propose and prove fix</text>
+<ellipse cx="450" cy="508" rx="150" ry="22" class="hum"/><text x="450" y="512">UC9 Stop the platform or take over</text>
+<ellipse cx="450" cy="564" rx="150" ry="22" class="uc"/><text x="450" y="568">UC10 Review the audit record</text>
 </g>
-<!-- include/extend -->
-<path class="dash" d="M450,152 V168" marker-end="url(#a3)" transform="translate(0,0)"/>
-<text x="458" y="163" class="lbl">&lt;&lt;include&gt;&gt; (UC3 uses UC2)</text>
-<path class="badln" d="M600,430 C700,430 700,130 600,130" marker-end="url(#a3)"/>
-<text x="660" y="290" class="lbl" transform="rotate(-90 660 290)">&lt;&lt;extend&gt;&gt; (UC7 extends UC2)</text>
-<!-- actors -->
+<path class="dash" d="M450,138 V148" marker-end="url(#a3)"/>
+<text x="458" y="147" class="lbl">&lt;&lt;include&gt;&gt;</text>
+<path class="badln" d="M600,396 C660,396 660,116 600,116" marker-end="url(#a3)"/>
+<text x="672" y="256" class="lbl" transform="rotate(-90 672 256)" text-anchor="middle">&lt;&lt;extend&gt;&gt; UC7 extends UC2</text>
 <g>
 <circle cx="90" cy="150" r="12" fill="none" stroke="var(--fg)" stroke-width="1.5"/><path d="M90,162 V196 M70,174 H110 M90,196 L74,226 M90,196 L106,226" stroke="var(--fg)" stroke-width="1.5" fill="none"/>
 <text x="90" y="246" text-anchor="middle" class="md">On-call engineer</text>
-<circle cx="90" cy="340" r="12" fill="none" stroke="var(--fg)" stroke-width="1.5"/><path d="M90,352 V386 M70,364 H110 M90,386 L74,416 M90,386 L106,416" stroke="var(--fg)" stroke-width="1.5" fill="none"/>
-<text x="90" y="436" text-anchor="middle" class="md">Service owner</text>
-<text x="90" y="454" text-anchor="middle" class="lbl">(approver: either one)</text>
-<rect x="760" y="40" width="120" height="50" rx="6" class="box"/><text x="820" y="62" text-anchor="middle" class="md">&lt;&lt;system&gt;&gt;</text><text x="820" y="78" text-anchor="middle" class="md">Monitoring</text>
+<circle cx="90" cy="400" r="12" fill="none" stroke="var(--fg)" stroke-width="1.5"/><path d="M90,412 V446 M70,424 H110 M90,446 L74,476 M90,446 L106,476" stroke="var(--fg)" stroke-width="1.5" fill="none"/>
+<text x="90" y="496" text-anchor="middle" class="md">Service owner</text>
+<text x="90" y="514" text-anchor="middle" class="lbl">(approver: either one)</text>
+<rect x="740" y="35" width="140" height="50" rx="6" class="box"/><text x="810" y="57" text-anchor="middle" class="md">&lt;&lt;system&gt;&gt;</text><text x="810" y="73" text-anchor="middle" class="md">Monitoring</text>
+<rect x="740" y="203" width="140" height="50" rx="6" class="box"/><text x="810" y="225" text-anchor="middle" class="md">&lt;&lt;system&gt;&gt;</text><text x="810" y="241" text-anchor="middle" class="md">Reviewer (other model)</text>
 </g>
-<!-- associations -->
 <g class="ln">
-<path d="M760,70 H600"/>
-<path d="M110,180 L305,72"/>
-<path d="M110,185 L303,187"/>
-<path d="M110,190 L306,300"/>
-<path d="M110,195 L320,420"/>
-<path d="M110,200 L330,478"/>
-<path d="M110,350 L305,70"/>
-<path d="M110,355 L305,308"/>
-<path d="M110,365 L330,480"/>
+<path d="M740,60 H600"/>
+<path d="M740,228 H600"/>
+<path d="M110,180 L303,175"/>
+<path d="M110,185 L306,287"/>
+<path d="M110,190 L310,399"/>
+<path d="M110,195 L320,510"/>
+<path d="M110,200 L330,562"/>
+<path d="M110,410 L305,62"/>
+<path d="M110,415 L306,290"/>
+<path d="M110,425 L303,452"/>
+<path d="M110,430 L320,512"/>
 </g>
 </svg>
-<p class="cap">Figure 3. Use case diagram. Monitoring starts UC1. The on-call engineer and the service owner use the other cases. Yellow = human decision. Red = escalation.</p>
+<p class="cap">Figure 3. Use case diagram. Monitoring starts UC1. A reviewer that uses a different model takes part in UC4. Yellow = human decision. Red = escalation.</p>
 </div>
 
 <table>
 <tr><th>ID</th><th>Use case</th><th>Result</th></tr>
-<tr><td>UC1</td><td>Receive alert and find owner</td><td>The platform starts by itself when an alert arrives. It finds the owning team and the person on call.</td></tr>
+<tr><td>UC1</td><td>Receive and group alerts, find owner</td><td>The platform listens for alert events and starts by itself. It groups related alerts into one incident. It finds the owning team and the person on call.</td></tr>
 <tr><td>UC2</td><td>Investigate and gather evidence</td><td>The platform collects logs, metrics, recent changes, past incidents, and knowledge documents. This is repeated work, so the platform does it.</td></tr>
 <tr><td>UC3</td><td>Explain hypothesis with evidence</td><td>The platform shows a hypothesis, the evidence for it, and its confidence level.</td></tr>
-<tr><td>UC4</td><td>Propose and prove a fix</td><td>The platform proposes a fix. It shows that the fix works in a non-production copy. A second agent with a new context reviews the fix.</td></tr>
-<tr><td>UC5</td><td>Approve and apply fix</td><td>A human approves. Only then does the platform apply the fix. The fix has an undo path.</td></tr>
-<tr><td>UC6</td><td>Verify recovery</td><td>The platform watches the same signals that caused the alert. It does not use its own claim as proof.</td></tr>
-<tr><td>UC7</td><td>Escalate when evidence is thin</td><td>The platform says "not enough information". It does not guess. It gives the human a clear explanation.</td></tr>
-<tr><td>UC8</td><td>Review the audit record</td><td>A human can trace every claim to its evidence.</td></tr>
+<tr><td>UC4</td><td>Propose recovery (revert)</td><td>The platform proposes to revert the recent change to the last known-good version. A reviewer that uses a different model checks the proposal.</td></tr>
+<tr><td>UC5</td><td>Approve and apply (revert or fix)</td><td>A human approves each change. Only then does the platform apply it. Each change has an undo path.</td></tr>
+<tr><td>UC6</td><td>Verify recovery</td><td>The platform watches the same signals that caused the alert, and compares them to the normal level before the incident. It does not use its own claim as proof.</td></tr>
+<tr><td>UC7</td><td>Escalate by rules and rubric</td><td>When the escalation rules or the rubric say "not enough evidence", the platform says so. It does not guess. It gives the human a clear explanation.</td></tr>
+<tr><td>UC8</td><td>Find root cause, propose and prove fix</td><td>After recovery, the platform finds the root cause. It proposes a permanent fix and proves it in a non-production copy. The reviewer checks it. Then UC5 applies it after approval, and UC6 verifies it.</td></tr>
+<tr><td>UC9</td><td>Stop the platform or take over</td><td>A human can stop all platform actions at any step and take over the incident.</td></tr>
+<tr><td>UC10</td><td>Review the audit record</td><td>A human can trace every claim to its evidence.</td></tr>
 </table>
 
 <h3>What the platform does and what humans do</h3>
 <table>
 <tr><th>The platform does (repeated work)</th><th>Humans do (judgment)</th></tr>
-<tr><td>Gather evidence from many sources<br>Join and summarize the evidence<br>Rank hypotheses<br>Propose a fix and prove it in a non-production copy</td><td>Decide to change production<br>Set the business severity<br>Handle new or unclear cases<br>Talk to customers</td></tr>
+<tr><td>Group alerts<br>Gather evidence from many sources<br>Join and summarize the evidence<br>Rank hypotheses<br>Propose a revert<br>Propose a permanent fix and prove it in a non-production copy</td><td>Decide to change production<br>Set the business severity<br>Approve or decline the permanent fix<br>Handle new or unclear cases<br>Talk to customers</td></tr>
 </table>
 
 <!-- ============ 1.5 ============ -->
@@ -310,60 +358,137 @@ svg .ac{fill:var(--muted)}
 <tr><td>Collects, joins, and reasons about evidence.<br>Gives suggestions.</td><td>Does all of that, <b>and</b> acts on the environment, watches the result, and reasons again. It repeats this until the goal is met. Guardrails limit the loop (time, steps, cost). It verifies the recovery.</td></tr>
 </table>
 
+<h3>What the platform can do in V1</h3>
+<ul>
+<li><b>Read:</b> the platform can read evidence from the affected service and from related services.</li>
+<li><b>Write:</b> the platform has <b>two</b> production actions in V1, each after human approval: (1) revert the most recent change to the last known-good version; (2) apply an approved permanent fix (a code or configuration change) that was proven in a non-production copy. Each action has an undo path.</li>
+<li><b>Trigger:</b> the platform listens for alert events. It does not depend on one channel (email, chat, or ticket). It can send findings to the channel of the alert and to the incident record.</li>
+</ul>
+
 <h3>Incident life cycle</h3>
 <div class="fig">
-<svg viewBox="0 0 1100 290" role="img" aria-label="State diagram of an incident">
-<defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="a4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
+<svg viewBox="0 0 1100 300" role="img" aria-label="State diagram of an incident">
+<defs><marker id="a4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="a4b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker><marker id="a4g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--ok)"/></marker></defs>
 <circle cx="14" cy="82" r="6" fill="var(--fg)"/>
-<g class="sm" text-anchor="middle">
-<rect x="30" y="60" width="120" height="44" rx="10" class="box"/><text x="90" y="86" class="md">Received</text>
-<rect x="180" y="60" width="120" height="44" rx="10" class="uc"/><text x="240" y="86" class="md">Investigating</text>
-<rect x="330" y="60" width="120" height="44" rx="10" class="uc"/><text x="390" y="78" class="md">Hypothesis</text><text x="390" y="94" class="md">ready</text>
-<rect x="480" y="60" width="120" height="44" rx="10" class="uc"/><text x="540" y="78" class="md">Fix proven</text><text x="540" y="94" class="md">(non-production)</text>
-<rect x="630" y="60" width="120" height="44" rx="10" class="hum"/><text x="690" y="78" class="md">Awaiting</text><text x="690" y="94" class="md">human approval</text>
-<rect x="780" y="60" width="120" height="44" rx="10" class="uc"/><text x="840" y="78" class="md">Monitoring</text><text x="840" y="94" class="md">same signals</text>
-<rect x="930" y="60" width="120" height="44" rx="10" class="okb"/><text x="990" y="86" class="md">Resolved</text>
-<rect x="460" y="210" width="160" height="44" rx="10" class="bad"/><text x="540" y="228" class="md">Escalated to human</text><text x="540" y="244" class="lbl">(with explanation)</text>
+<g text-anchor="middle" class="md">
+<rect x="30" y="60" width="120" height="44" rx="10" class="box"/><text x="90" y="78">Received</text><text x="90" y="94" class="lbl">(alerts grouped)</text>
+<rect x="180" y="60" width="120" height="44" rx="10" class="uc"/><text x="240" y="86">Investigating</text>
+<rect x="330" y="60" width="120" height="44" rx="10" class="uc"/><text x="390" y="78">Revert</text><text x="390" y="94">proposed</text>
+<rect x="480" y="60" width="120" height="44" rx="10" class="hum"/><text x="540" y="78">Awaiting</text><text x="540" y="94">human approval</text>
+<rect x="630" y="60" width="120" height="44" rx="10" class="uc"/><text x="690" y="78">Monitoring</text><text x="690" y="94">same signals</text>
+<rect x="780" y="60" width="120" height="44" rx="10" class="okb"/><text x="840" y="86">Recovered</text>
+<rect x="930" y="60" width="120" height="44" rx="10" class="box"/><text x="990" y="78">Fix phase</text><text x="990" y="94" class="lbl">(Figure 4b)</text>
+<rect x="460" y="210" width="160" height="44" rx="10" class="bad"/><text x="540" y="228">Escalated to human</text><text x="540" y="244" class="lbl">(with explanation)</text>
 </g>
 <g class="ln">
 <path d="M20,82 H28" marker-end="url(#a4)"/>
 <path d="M150,82 H178" marker-end="url(#a4)"/><path d="M300,82 H328" marker-end="url(#a4)"/><path d="M450,82 H478" marker-end="url(#a4)"/><path d="M600,82 H628" marker-end="url(#a4)"/><path d="M750,82 H778" marker-end="url(#a4)"/><path d="M900,82 H928" marker-end="url(#a4)"/>
 </g>
+<path class="okln" d="M240,60 C240,14 690,14 690,58" marker-end="url(#a4g)"/>
+<text x="465" y="16" class="lbl" text-anchor="middle">recovers by itself (no action)</text>
 <g fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4">
 <path d="M240,104 L460,232" marker-end="url(#a4b)"/>
+<path d="M390,104 L480,208" marker-end="url(#a4b)"/>
 <path d="M540,104 V208" marker-end="url(#a4b)"/>
-<path d="M690,104 L590,208" marker-end="url(#a4b)"/>
-<path d="M840,104 L620,232" marker-end="url(#a4b)"/>
+<path d="M690,104 L620,232" marker-end="url(#a4b)"/>
 </g>
-<g class="lbl"><text x="285" y="190" transform="rotate(30 285 190)">evidence thin / limit hit</text>
-<text x="548" y="160">proof or review fails</text>
-<text x="660" y="170" transform="rotate(-48 660 170)">human rejects</text>
-<text x="745" y="200" transform="rotate(-27 745 200)">errors persist (undo first)</text></g>
-<text x="14" y="140" class="lbl">Solid = normal path. Red dashed = escalation path.</text>
+<g class="lbl">
+<text x="270" y="113" transform="rotate(30 270 113)">evidence thin / no revert / limit hit</text>
+<text x="442" y="150">review</text><text x="442" y="163">rejects</text>
+<text x="548" y="150">rejected or</text><text x="548" y="163">no answer</text>
+<text x="660" y="190">errors persist</text>
+</g>
+<text x="14" y="276" class="lbl">Solid = normal path. Red dashed = escalation. Green dashed = self-recovery.</text><text x="14" y="292" class="lbl">A human can stop the platform in any state. The incident then goes to "Escalated".</text>
 </svg>
-<p class="cap">Figure 4. State diagram of an incident. Every red path ends with a human.</p>
+<p class="cap">Figure 4. State diagram of an incident, phase 1: recovery. Every red path ends with a human.</p>
+</div>
+
+<div class="fig">
+<svg viewBox="0 0 1000 300" role="img" aria-label="State diagram of the permanent fix phase">
+<defs><marker id="a6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="a6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
+<g text-anchor="middle" class="md">
+<rect x="30" y="60" width="120" height="44" rx="10" class="okb"/><text x="90" y="86">Recovered</text>
+<rect x="180" y="60" width="120" height="44" rx="10" class="uc"/><text x="240" y="78">Fix</text><text x="240" y="94">proposed</text>
+<rect x="330" y="60" width="120" height="44" rx="10" class="uc"/><text x="390" y="78">Fix proven</text><text x="390" y="94">(non-production)</text>
+<rect x="480" y="60" width="120" height="44" rx="10" class="hum"/><text x="540" y="78">Awaiting</text><text x="540" y="94">fix approval</text>
+<rect x="630" y="60" width="120" height="44" rx="10" class="uc"/><text x="690" y="78">Fix applied,</text><text x="690" y="94">monitoring</text>
+<rect x="780" y="60" width="120" height="44" rx="10" class="box"/><text x="840" y="78">Closed</text><text x="840" y="94" class="lbl">(report)</text>
+<rect x="460" y="210" width="160" height="44" rx="10" class="bad"/><text x="540" y="228">Escalated to human</text><text x="540" y="244" class="lbl">(service stays recovered)</text>
+</g>
+<g class="ln">
+<path d="M150,82 H178" marker-end="url(#a6)"/><path d="M300,82 H328" marker-end="url(#a6)"/><path d="M450,82 H478" marker-end="url(#a6)"/><path d="M600,82 H628" marker-end="url(#a6)"/><path d="M750,82 H778" marker-end="url(#a6)"/>
+</g>
+<path class="dash" d="M540,60 C540,14 840,14 840,58" marker-end="url(#a6)"/>
+<text x="690" y="16" class="lbl" text-anchor="middle">human declines: close with recommendation</text>
+<g fill="none" stroke="var(--bad)" stroke-width="1.5" stroke-dasharray="5 4">
+<path d="M240,104 L460,232" marker-end="url(#a6b)"/>
+<path d="M390,104 L480,208" marker-end="url(#a6b)"/>
+<path d="M540,104 V208" marker-end="url(#a6b)"/>
+<path d="M690,104 L620,232" marker-end="url(#a6b)"/>
+</g>
+<g class="lbl">
+<text x="262" y="118" transform="rotate(30 262 118)">proof fails / cannot reproduce</text>
+<text x="442" y="150">review</text><text x="442" y="163">rejects</text>
+<text x="548" y="150">no answer</text>
+<text x="660" y="190">errors return:</text><text x="660" y="203">undo the fix</text>
+</g>
+<text x="14" y="284" class="lbl">Solid = normal path. Red dashed = escalation. Grey dashed = closed without the fix. A human can stop the platform in any state.</text>
+</svg>
+<p class="cap">Figure 4b. State diagram, phase 2: permanent fix. When the fix path fails, the service stays on the recovered version.</p>
 </div>
 
 <h3>Human checkpoints (V1)</h3>
 <table>
 <tr><th>Checkpoint</th><th>Why a human is needed</th></tr>
-<tr><td>Confirm the severity</td><td>Business severity needs human judgment.</td></tr>
-<tr><td>Approve every fix</td><td>A production change can hurt users. A human must own the risk.</td></tr>
-<tr><td>Approve any write change</td><td>Same reason.</td></tr>
-<tr><td>Approve any irreversible change</td><td>It cannot be undone.</td></tr>
-<tr><td>Approve any deletion</td><td>Deleted data can be lost for ever.</td></tr>
+<tr><td>Confirm or change the severity (does not block the platform)</td><td>Business severity needs human judgment.</td></tr>
+<tr><td>Approve every production change (in V1: every revert and every fix)</td><td>A production change can hurt users. A human must own the risk.</td></tr>
+<tr><td>Backup approval when the first approver does not answer in the set time</td><td>A sleeping approver must not stop recovery. Silence is never approval.</td></tr>
+<tr><td>Approve or decline the permanent fix</td><td>A new change can bring new faults. The service is already recovered, so the approver can take time.</td></tr>
+<tr><td>Stop the platform or take over, at any step</td><td>Humans always keep control.</td></tr>
 <tr><td>Receive an escalation</td><td>The platform cannot continue by itself.</td></tr>
 </table>
-<div class="note"><b>Decision.</b> V1 has no allow list. A human approves <b>every</b> production change, <b>every</b> time. The approver is the on-call engineer or the service owner.</div>
+<div class="note"><b>Decision.</b> V1 has no allow list. A human approves <b>every</b> production change, <b>every</b> time. The approver is the on-call engineer or the service owner. The approver can be the author of the change.</div>
+
+<h3>How the platform decides (decision models)</h3>
+<p>The platform uses two known decision models. One sets how careful an action must be. The other sets how deep the reasoning must be.</p>
+<table>
+<tr><th>Model</th><th>Question it answers</th><th>Rule in V1</th></tr>
+<tr><td><b>Type 1 / Type 2 decisions</b> (one-way door / two-way door)</td><td>Can the action be undone?</td><td><b>Type 2</b> (can be undone): reading evidence, a revert, and a permanent fix with an undo path. A revert and a fix still need human approval.<br><b>Type 1</b> (cannot be undone): deletion and irreversible changes. Not allowed in V1.</td></tr>
+<tr><td><b>System 1 / System 2 thinking</b> (fast / slow)</td><td>How much reasoning does this case need?</td><td><b>System 1 (fast):</b> fixed escalation rules (policies) are checked first. Example: no recent change matches the errors, so escalate.<br><b>System 2 (slow):</b> when no rule decides, the platform scores the evidence with a rubric that has context and guidance.<br><b>Gate:</b> a low rubric score, a new kind of incident, or a conflict in the evidence sends the incident to a human.</td></tr>
+</table>
+<div class="fig">
+<svg viewBox="0 0 1000 170" role="img" aria-label="Escalation decision flow">
+<defs><marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="md">
+<rect x="10" y="50" width="130" height="50" rx="6" class="box"/><text x="75" y="72">Evidence</text><text x="75" y="88">collected</text>
+<polygon points="250,30 340,75 250,120 160,75" class="uc"/><text x="250" y="70">System 1:</text><text x="250" y="86">a rule matches?</text>
+<polygon points="520,30 620,75 520,120 420,75" class="uc"/><text x="520" y="70">System 2:</text><text x="520" y="86">rubric score high?</text>
+<rect x="700" y="50" width="130" height="50" rx="6" class="uc"/><text x="765" y="72">Propose revert</text><text x="765" y="88">(Type 2 action)</text>
+<rect x="420" y="135" width="200" height="30" rx="6" class="bad"/><text x="520" y="155">Escalate to human</text>
+<rect x="860" y="50" width="130" height="50" rx="6" class="hum"/><text x="925" y="72">Human</text><text x="925" y="88">approves</text>
+</g>
+<g class="ln">
+<path d="M140,75 H158" marker-end="url(#a5)"/>
+<path d="M340,75 H418" marker-end="url(#a5)"/>
+<path d="M620,75 H698" marker-end="url(#a5)"/>
+<path d="M830,75 H858" marker-end="url(#a5)"/>
+<path d="M250,120 V150 H418" marker-end="url(#a5)"/>
+<path d="M520,120 V133" marker-end="url(#a5)"/>
+</g>
+<g class="lbl"><text x="350" y="68">no rule</text><text x="630" y="68">yes</text><text x="258" y="140">escalation rule</text><text x="528" y="130">low / new / conflict</text></g>
+</svg>
+<p class="cap">Figure 5. Escalation decision flow. Fast rules first (System 1), then a rubric (System 2). Only a Type 2 action is proposed. The same flow applies to a permanent fix.</p>
+</div>
 
 <h3>What gives engineers trust</h3>
 <ul>
 <li><b>Evidence:</b> every claim has a source in the provenance record.</li>
 <li><b>Audit trail:</b> a complete record of what the platform read, said, and did.</li>
 <li><b>Honesty:</b> when confidence is low, the platform says so and escalates. It does not guess.</li>
-<li><b>Control:</b> no production change without human approval.</li>
-<li><b>Independent proof:</b> a second agent reviews the fix, a non-production copy tests it, and the original signals prove the recovery.</li>
+<li><b>Control:</b> no production change without human approval. A human can stop the platform at any step.</li>
+<li><b>Independent checks:</b> a reviewer that uses a different model checks every revert and fix. A non-production copy proves every fix. The original signals prove the recovery.</li>
 </ul>
+<div class="note"><b>Limitation.</b> A reviewer with a different model reduces shared errors, but it does not remove them. The human approval stays necessary.</div>
 
 <!-- ============ 1.6 ============ -->
 <h2><span class="sec">1.6</span>Success definition</h2>
@@ -372,28 +497,33 @@ svg .ac{fill:var(--muted)}
 <h3>Smallest useful product (V1)</h3>
 <p>V1 is useful when the platform can do these things:</p>
 <ol>
-<li>Investigate an alert, analyze the evidence, and explain the findings.</li>
-<li>Suggest a fix and verify the fix before it is applied.</li>
-<li>Apply the fix <b>only</b> with human approval.</li>
-<li>Watch the same signals after the fix, and say if the incident is resolved.</li>
+<li>Receive and group alerts, and investigate the incident.</li>
+<li>Explain the findings with evidence.</li>
+<li>Propose a revert of the recent change, and apply it <b>only</b> with human approval.</li>
+<li>Watch the same signals after the revert, and say if the service is recovered.</li>
+<li>Find the root cause. Propose a permanent fix, prove it in a non-production copy, and apply it <b>only</b> with human approval. Verify the signals again.</li>
 <li>Escalate with a clear explanation when the evidence is not enough.</li>
 </ol>
 
-<h3>How we know that a repair worked</h3>
-<p>The platform does not use its own claim as proof. After the fix, the platform checks the signals that caused the alert. The error rate must return to normal. The alert must clear. These must stay true for a set period. <span class="tag">period: not yet set (C4)</span></p>
+<h3>How we know that a recovery worked</h3>
+<p>The platform does not use its own claim as proof. After the revert, the platform checks the signals that caused the alert. The error rate must return to the normal level from before the incident. The alert must clear. These must stay true for a set period. <span class="tag">period and "normal level": not yet set (C4, E4)</span></p>
+<p>Low traffic (for example at 2 AM) can make a failed service look healthy. The check must consider the traffic level.</p>
 
 <h3>Outcome measures</h3>
 <table>
 <tr><th>Measure</th><th>Meaning</th><th>Baseline (today)</th><th>Target</th></tr>
-<tr><td>Time to diagnose</td><td>Alert received until the cause is identified</td><td>Not measured yet (C1)</td><td>Not set (C2)</td></tr>
 <tr><td>Time to recover</td><td>Alert received until the service is healthy</td><td>Not measured yet (C1)</td><td>Not set (C2)</td></tr>
+<tr><td>Time to diagnose</td><td>Alert received until the root cause is identified</td><td>Not measured yet (C1)</td><td>Not set (C2)</td></tr>
 <tr><td>Diagnosis accuracy</td><td>How often the diagnosis was correct</td><td>Not measured yet (C1)</td><td>Not set (C2)</td></tr>
 <tr><td>On-call time saved</td><td>Time the on-call engineer did not spend, compared to the baseline</td><td>Not measured yet (C1)</td><td>Not set (C2)</td></tr>
+<tr><td>Cost per incident</td><td>What the platform costs to handle one incident</td><td>Not applicable</td><td>Not set (C2)</td></tr>
+<tr><td>Wrong-change rate</td><td>How often an approved revert or fix did not help, or caused new errors</td><td>Not applicable</td><td>Not set (C2)</td></tr>
+<tr><td>Escalation rate</td><td>How often the platform handed the incident to a human</td><td>Not applicable</td><td>Not set (C2)</td></tr>
 </table>
-<p class="qs">Plan: measure the baseline from a few past incidents first. Then set the targets.</p>
+<p class="qs">Plan: measure the baseline from past incidents. If there are no past incidents, an engineer handles the reference scenario by hand, and we measure the time. Then we set the targets.</p>
 
 <h3>Demonstration</h3>
-<p>Use the reference scenario. Show these steps in order: alert, owner found, evidence shown, hypothesis with confidence, fix proven in a non-production copy, fresh-context review, human approval, fix applied, signals watched until healthy, summary and audit trail.</p>
+<p>Use the reference scenario. Show these steps in order: alert, alerts grouped, owner found, evidence shown, hypothesis with confidence, revert proposed, review by a different model, human approval, revert applied, signals watched until healthy. Then: root cause found, permanent fix proposed and proven in a non-production copy, fix reviewed, fix approved, fix applied, signals watched again, report and audit trail.</p>
 <p>Then do a second, short run with missing evidence. Stakeholders must see the platform say "not enough information" and escalate.</p>
 
 <!-- ============ 1.7 ============ -->
@@ -404,12 +534,13 @@ svg .ac{fill:var(--muted)}
 <div class="no"><ol>
 <li>Make a production change or deployment without human approval.</li>
 <li>Leak sensitive data or secrets.</li>
-<li>Act outside the affected service.</li>
+<li>Write to any service other than the affected service. (Reading related services is allowed.)</li>
 <li>Delete data.</li>
 <li>Turn off or silence alerts and monitoring.</li>
 <li>Change access or permissions.</li>
 <li>Claim success without independent verification.</li>
-<li>Apply a change that has no undo path.</li>
+<li>Apply a change that has no undo path. (Irreversible changes are not allowed in V1.)</li>
+<li>Take silence as approval.</li>
 </ol></div>
 
 <h3>The product is not</h3>
@@ -422,13 +553,13 @@ svg .ac{fill:var(--muted)}
 
 <!-- ============ Acceptance ============ -->
 <h2>Acceptance checks before submission</h2>
-<ul style="list-style:none;padding-left:0">
+<ul class="checks">
 <li>&#9745; Every required section above is present and complete.</li>
 <li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
-<li>&#9744; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(Open: the team must name a person for each owner. See Appendix.)</i></li>
+<li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
 <li>&#9745; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(None. See Appendix.)</i></li>
 <li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(No earlier artifact exists.)</i></li>
-<li>&#9744; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository. <i>(Open: save in the team repository.)</i></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
 </ul>
 <table><tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr><tr><th>Team</th><td>&nbsp;</td><th>Room</th><td>&nbsp;</td></tr></table>
 
@@ -437,36 +568,59 @@ svg .ac{fill:var(--muted)}
 <p class="qs">These records are not template sections. They hold the evidence for the acceptance checks above.</p>
 
 <h3>Assumptions and open unknowns</h3>
-<p class="qs">Every assumption is <b>provisional</b>. Owner "team" means the team must name one person before this artifact is submitted.</p>
+<p class="qs">Every assumption is <b>provisional</b>. The owner is the person who owns the layer where the item is validated (see <code>specs/work-split.md</code>). Layer 2 items go to Dhanush as coordinator.</p>
 <table>
 <tr><th>ID</th><th>Item</th><th>Type</th><th>Owner</th><th>Validate when</th></tr>
-<tr><td>A1</td><td>A service-ownership list exists, or the team can create it and keep it current</td><td>Assumption</td><td>Team</td><td>Before Layer 2 closes. Check with one real team.</td></tr>
-<tr><td>A2</td><td>Alerts reach the platform with the rule and the limit that was broken</td><td>Assumption</td><td>Team</td><td>Layer 3 (alert catalog)</td></tr>
-<tr><td>A3</td><td>Fallback for an unmapped service or an old list</td><td>Unknown</td><td>Team</td><td>Layer 4</td></tr>
-<tr><td>A5 / C1</td><td>Baseline: time to diagnose and recover today</td><td>Unknown</td><td>Team</td><td>Before targets are set. Measure from past incidents.</td></tr>
-<tr><td>B1</td><td>A safe non-production copy can reproduce incidents</td><td>Assumption</td><td>Team</td><td>Layer 2 (Q2.14)</td></tr>
-<tr><td>B3</td><td>Numbers for the loop limits (time, steps, cost)</td><td>Unknown</td><td>Team</td><td>Layer 2 (Q2.16, Q2.18)</td></tr>
-<tr><td>B4</td><td>What happens when the non-production copy cannot reproduce the incident</td><td>Unknown</td><td>Team</td><td>Layer 11</td></tr>
-<tr><td>C2</td><td>Target values for each outcome measure</td><td>Unknown</td><td>Team</td><td>After C1</td></tr>
-<tr><td>C3</td><td>Who decides that a diagnosis was correct, and against what</td><td>Unknown</td><td>Team</td><td>Layer 12</td></tr>
-<tr><td>C4</td><td>The period that signals must stay healthy after a fix</td><td>Unknown</td><td>Team</td><td>With C2</td></tr>
-<tr><td>D3</td><td>How long incident records are kept</td><td>Unknown</td><td>Team</td><td>Layer 2 / Layer 7</td></tr>
+<tr><td>A1</td><td>A service-ownership list exists, or the team can create it and keep it current</td><td>Assumption</td><td>Dhanush</td><td>Before Layer 2 closes. Check with one real team.</td></tr>
+<tr><td>A2</td><td>Alerts reach the platform with the rule, the limit that was broken, and an initial severity</td><td>Assumption</td><td>Chirag</td><td>Layer 3 (alert catalog)</td></tr>
+<tr><td>A3</td><td>Fallback for an unmapped service or an old list</td><td>Unknown</td><td>Chirag</td><td>Layer 4</td></tr>
+<tr><td>B1</td><td>A non-production copy is available and can reproduce the problem. Required to prove a fix; optional for a revert</td><td>Assumption</td><td>Dhanush</td><td>Layer 2 (Q2.14)</td></tr>
+<tr><td>B3</td><td>Numbers for the loop limits (time, steps, cost)</td><td>Unknown</td><td>Dhanush</td><td>Layer 2 (Q2.16, Q2.18)</td></tr>
+<tr><td>B4</td><td>The undo path for a revert and for a fix, and how the platform knows the last known-good version</td><td>Unknown</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>C1</td><td>Baseline: time to diagnose and recover today (from past incidents, or a timed manual run)</td><td>Unknown</td><td>Irfan</td><td>Before targets are set</td></tr>
+<tr><td>C2</td><td>Target values for each outcome measure</td><td>Unknown</td><td>Irfan</td><td>After C1, in Layer 12</td></tr>
+<tr><td>C3</td><td>Who decides that a diagnosis was correct, and against what</td><td>Unknown</td><td>Irfan</td><td>Layer 12</td></tr>
+<tr><td>C4</td><td>The period that signals must stay healthy after a revert</td><td>Unknown</td><td>Rinisha</td><td>Layer 11 (independent verification)</td></tr>
+<tr><td>D3</td><td>How long incident records are kept</td><td>Unknown</td><td>Manish</td><td>Layer 7</td></tr>
+<tr><td>E1</td><td>An on-call schedule exists, and the platform can read it</td><td>Assumption</td><td>Chirag</td><td>Layer 3</td></tr>
+<tr><td>E2</td><td>Past incidents and knowledge documents exist, and are accurate and current</td><td>Assumption</td><td>Irfan</td><td>Layer 10 (retrieval)</td></tr>
+<tr><td>E3</td><td>The exact escalation rules, the rubric content, and the gate limits (decision models chosen: Type 1/2 and System 1/2)</td><td>Unknown</td><td>Dhanush</td><td>Layer 9 (evidence-based reasoning)</td></tr>
+<tr><td>E4</td><td>The "normal level" for the recovery check, and how low traffic is handled</td><td>Unknown</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>E6</td><td>The rule that groups related alerts into one incident</td><td>Unknown</td><td>Manish</td><td>Layer 7 (events)</td></tr>
+<tr><td>E7</td><td>How long the platform watches a self-recovered incident</td><td>Unknown</td><td>Dhanush</td><td>Layer 8 (state machine)</td></tr>
+<tr><td>E8</td><td>Handling of secrets and personal data in evidence (section 1.3). Decided; check it against the threats</td><td>Decision</td><td>Chirag</td><td>Layer 5 (threat model)</td></tr>
+<tr><td>E11</td><td>Safety measures: wrong-change rate and escalation rate. Decided; set targets</td><td>Decision</td><td>Irfan</td><td>Layer 12</td></tr>
+<tr><td>F1</td><td>Approval timeout values, and the backup approver order</td><td>Unknown</td><td>Rinisha</td><td>Layer 11 (human approval)</td></tr>
+<tr><td>F2</td><td>The platform cost per incident</td><td>Unknown</td><td>Irfan</td><td>Layer 10 (inference budgets)</td></tr>
 </table>
 
 <h3>Decisions made</h3>
 <table>
 <tr><th>Decision</th><th>Section</th></tr>
 <tr><td>Route to the owning team and the person on call. Show the change author as evidence only.</td><td>1.2</td></tr>
-<tr><td>The approver is the on-call engineer or the service owner.</td><td>1.2, 1.5</td></tr>
+<tr><td>The approver is the on-call engineer or the service owner. The approver can be the author of the change.</td><td>1.2, 1.5</td></tr>
+<tr><td>Recovery comes first: revert the recent change to the last known-good version. Then the permanent fix.</td><td>1.3, 1.5</td></tr>
+<tr><td>V1 also proposes a permanent fix after recovery. It proves the fix in a non-production copy, a different model reviews it, and the platform applies it only after human approval.</td><td>1.3, 1.5, 1.6</td></tr>
+<tr><td>A reviewer that uses a different model checks every proposal.</td><td>1.3, 1.5</td></tr>
+<tr><td>The severity check runs in parallel. It does not block the platform.</td><td>1.3, 1.5</td></tr>
+<tr><td>If the approver does not answer in a set time, the backup approver is asked. Silence is never approval.</td><td>1.3, 1.5</td></tr>
+<tr><td>The platform listens for alert events. It does not depend on one channel.</td><td>1.3, 1.5</td></tr>
+<tr><td>Related alerts are grouped into one incident.</td><td>1.3, 1.4</td></tr>
+<tr><td>A self-recovered incident is marked "recovered without action".</td><td>1.3, 1.5</td></tr>
+<tr><td>A human can stop the platform or take over at any step.</td><td>1.4, 1.5</td></tr>
+<tr><td>Decision models: Type 1 / Type 2 (reversibility) sets how careful an action must be. System 1 / System 2 (fast rules, then a rubric) sets when to escalate.</td><td>1.5</td></tr>
+<tr><td>The platform never reads secret values. Secrets and personal data are removed from evidence.</td><td>1.3</td></tr>
+<tr><td>Wrong-change rate and escalation rate are safety measures.</td><td>1.6</td></tr>
 <tr><td>The loop has limits for time, steps, and cost. At the limit, the platform escalates.</td><td>1.3, 1.5</td></tr>
-<tr><td>Every change has an undo path before approval.</td><td>1.3, 1.7</td></tr>
+<tr><td>Deletion and irreversible changes are not allowed in V1.</td><td>1.7</td></tr>
+<tr><td>"Act outside the affected service" means a write. Reading related services is allowed.</td><td>1.5, 1.7</td></tr>
 <tr><td>No allow list in V1. Every production change needs human approval.</td><td>1.5, 1.7</td></tr>
-<tr><td>Recovery is verified with the original alert signals.</td><td>1.6</td></tr>
+<tr><td>Recovery is verified with the original alert signals against the normal level.</td><td>1.6</td></tr>
+<tr><td>If there are no past incidents, the baseline comes from a timed manual run.</td><td>1.6</td></tr>
 </table>
 
 <h3>Where Claude and ChatGPT disagreed</h3>
 <p>None recorded. The team used Claude only for this layer. Add rows here if a second agent is used.</p>
-
 </main>
 </body>
 </html>
