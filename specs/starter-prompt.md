@@ -12,8 +12,18 @@ How we work:
 2. Don't go down rabbit holes. This is V1. Keep it simple. If something is for a later layer, say which layer and move on.
 3. After each section, log the decisions in specs/layer-NN-<name>/conversation-log.md using the worksheet's format: one row per agent conversation with Questions, Agent, Conversation link, Decision reached, Open unknowns and owner, Artifact section. Also keep the "Where Claude and ChatGPT disagreed" list. Mark every assumption as provisional, with an owner and a condition to validate it.
 4. When all sections are done, build the artifact as HTML in specs/layer-NN-<name>/artifact-N-<name>.html. It must follow the worksheet's artifact sheet strictly: the header (Team, Room, Date, Members), "Built from", the required-sections table (Required section, Questions this section answers, Done), the required sections with the exact names and order from the worksheet, the acceptance checks in the worksheet's exact words, then Reviewed by / Date. Put extra material (assumptions, decisions) in an appendix after that, not between sections.
-5. Write in Simplified Technical English (ASD-STE100), roughly 80%: short sentences, active voice, one idea per sentence. Use software-engineering diagrams where they help (use case, swimlane, sequence, state, component, ER, flow). Choose the diagram type to fit the content.
-6. Before you call the artifact done, check it against the worksheet's acceptance checks and tell me which ones are still open.
+5. Writing style: ASD-STE100 (Simplified Technical English), at least 80% in every artifact. Short sentences (about 20 words or fewer). One idea per sentence. Active voice. Use "must" for rules. Use one word for one meaning, and use the same term every time. No idioms, no filler, no marketing words. Define a technical term once, then reuse it. Use tables and lists for rules, steps and comparisons.
+6. Diagrams: add software-engineering diagrams wherever they help the reader see the design, in every artifact. Choose the type that fits the content, and give each a number and a caption (inline SVG, readable in light and dark mode):
+   - use case diagram: actors and what they do with the system
+   - swimlane / activity diagram: steps across people and components
+   - sequence diagram: messages between components over time
+   - state machine diagram: life cycle of an incident, task or approval
+   - component / architecture diagram: parts and their links, trust boundaries
+   - ER / class diagram: data model
+   - flowchart / decision tree: rules and branching
+   - deployment diagram: where things run
+   Do not add a diagram that only repeats the text. Every diagram must stay consistent with the text and with earlier artifacts.
+7. Before you call the artifact done, check it against the worksheet's acceptance checks and tell me which ones are still open.
 
 Are you ready? Start with Section A of Layer <N>: list its questions.
 ```
