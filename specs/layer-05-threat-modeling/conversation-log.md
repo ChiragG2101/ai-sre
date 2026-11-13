@@ -3,7 +3,7 @@
 Built from: Artifacts 3 and 4 (and A1, A2 for the standing decisions). Owner: Chirag.
 Focus: establish trust boundaries before allowing any AI-generated action. Treat every input the model reads as potentially hostile until shown otherwise.
 
-Labels (from Layer 2): **Fixed** = fixed requirement (with source), **Decision** (with rationale), **Assumption** (provisional; see table). Answers that follow directly from earlier artifacts were drafted by Claude and confirmed by the owner; only real choices were put to the owner as questions.
+Labels (from Layer 2): **Fixed** = fixed requirement (with source), **Decision** (with rationale), **Assumption** (provisional; see table). Method used (owner's choice, 2026-11-14): Claude drafted every answer that follows from earlier artifacts. Only real choices went to the owner as questions (M11 in Q5.7, the redaction method in Q5.26). The owner accepted the drafted rows as a set, not row by row. The team has not discussed them yet (work-split rule 4), and the ChatGPT pass is not done (H2).
 
 ## Conversation Log
 
