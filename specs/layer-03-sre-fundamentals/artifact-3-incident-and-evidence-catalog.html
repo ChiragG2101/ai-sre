@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact 3 - Incident and Evidence Catalog</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:17px;margin:24px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px}
+.sec{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:600;font-size:13px;padding:1px 8px;border-radius:4px;margin-right:6px}
+.qs{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--card)}
+.inc th:first-child{width:14%}
+.inc th:not(:first-child){width:28.6%}
+.tw{overflow-x:auto}
+.tw table{min-width:720px}
+code{font-size:13.5px;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:0 3px}
+.fig{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:12px 0}
+.fig svg{display:block;min-width:720px;width:100%;height:auto}
+.cap{color:var(--muted);font-size:14px;margin:4px 0 0}
+.note{border-left:4px solid var(--human);background:var(--human-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+ul,ol{padding-left:22px}li{margin:2px 0}
+.checks{list-style:none;padding-left:0}
+.ia{color:var(--bad);font-weight:600}.ib{color:var(--fix);font-weight:600}.ic{color:var(--human);font-weight:600}
+svg text{fill:var(--fg);font-family:system-ui,sans-serif}
+svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
+svg .bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+svg .okb{fill:var(--ok-bg);stroke:var(--ok);stroke-width:1.5}
+svg .uc{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1.5}
+svg .fx{fill:var(--fix-bg);stroke:var(--fix);stroke-width:1.5}
+svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .axis{stroke:var(--line);stroke-width:1.2}
+svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
+svg .ac{fill:var(--muted)}
+@media print{body{background:#fff}.fig{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Artifact 3 - Incident and Evidence Catalog</h1>
+<p class="sub">Building an AI SRE &middot; Layer 3: SRE Fundamentals &middot; <b>Built from.</b> Artifacts 1 and 2.</p>
+<table>
+<tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Chirag (owner), Dhanush (covered this layer), Manish, Rinisha, Irfan</td></tr>
+</table>
+<p class="qs">Writing style: Simplified Technical English (roughly). Decisions come from <code>conversation-log.md</code>. This layer describes how software fails and how engineers investigate it. It does not design the platform. Every section is completed for each of the three incidents:
+<span class="ia">A</span> configuration regression, <span class="ib">B</span> code regression, <span class="ic">C</span> insufficient evidence.</p>
+
+<h3>Required sections</h3>
+<table>
+<tr><th>Required section</th><th>Questions this section answers</th><th>Done</th></tr>
+<tr><td>3.1 Initial alert</td><td>Q3.3, Q3.9, Q3.10, Q3.22</td><td>&#9745;</td></tr>
+<tr><td>3.2 Service context</td><td>Q3.1, Q3.2, Q3.4, Q3.5, Q3.29, Q3.32</td><td>&#9745;</td></tr>
+<tr><td>3.3 Logs</td><td>Q3.17, Q3.20, Q3.31</td><td>&#9745;</td></tr>
+<tr><td>3.4 Metrics</td><td>Q3.11, Q3.18, Q3.21, Q3.23, Q3.24, Q3.25, Q3.28</td><td>&#9745;</td></tr>
+<tr><td>3.5 Traces</td><td>Q3.19, Q3.30</td><td>&#9745;</td></tr>
+<tr><td>3.6 Deployment changes</td><td>Q3.6, Q3.7, Q3.14, Q3.26</td><td>&#9745;</td></tr>
+<tr><td>3.7 Expected root cause</td><td>Q3.7, Q3.8, Q3.13, Q3.33</td><td>&#9745;</td></tr>
+<tr><td>3.8 Supporting evidence</td><td>Q3.8, Q3.12, Q3.27, Q3.34</td><td>&#9745;</td></tr>
+<tr><td>3.9 Contradicting evidence</td><td>Q3.12, Q3.27, Q3.35</td><td>&#9745;</td></tr>
+<tr><td>3.10 Expected escalation behavior</td><td>Q3.9, Q3.15, Q3.16, Q3.36, Q3.37</td><td>&#9745;</td></tr>
+</table>
+
+<h3>The three incidents at a glance</h3>
+<div class="tw"><table class="inc">
+<tr><th></th><th><span class="ia">A</span> Configuration regression</th><th><span class="ib">B</span> Code regression</th><th><span class="ic">C</span> Insufficient evidence</th></tr>
+<tr><td>Summary</td><td>A deployment changes a configuration value. The application returns HTTP 500 errors on all endpoints. (This is the worksheet reference scenario.)</td><td>A deployment adds a defect in application code. A function that worked before now fails for some requests.</td><td>The application fails. The available telemetry is incomplete and does not show a cause.</td></tr>
+<tr><td>Service</td><td><code>shop-api</code></td><td><code>shop-api</code>, endpoint <code>/checkout</code></td><td><code>orders</code></td></tr>
+<tr><td>Severity</td><td>SEV1</td><td>SEV2</td><td>SEV2</td></tr>
+<tr><td>Code version</td><td>Same as before</td><td>New commit</td><td>Unknown</td></tr>
+<tr><td>Config version</td><td>Changed</td><td>Same as before</td><td>Unknown</td></tr>
+</table></div>
+
+<!-- ============ 3.1 ============ -->
+<h2><span class="sec">3.1</span>Initial alert</h2>
+<p class="qs">Answers: Q3.3, Q3.9, Q3.10, Q3.22</p>
+
+<h3>How an alert becomes an incident</h3>
+<ul>
+<li>An alert is not always an incident. A short blip is noise.</li>
+<li>The team declares an incident when users are affected for longer than a set time: error rate above 2%, or p95 latency above 1 s, for more than 5 minutes (provisional, L3-A2).</li>
+<li>A shallow health check can pass while real requests fail. User-facing error rate and latency are better signals than the health check.</li>
+</ul>
+
+<h3>What the status code tells</h3>
+<table>
+<tr><th>Status</th><th>Meaning</th></tr>
+<tr><td>401, 403</td><td>Authentication or authorization failed. This is not a 500.</td></tr>
+<tr><td>502, 503, 504</td><td>The proxy cannot reach a healthy application, or the request timed out.</td></tr>
+<tr><td>500</td><td>The application itself failed. Usually an unhandled exception (for example a bad configuration value) or a failed dependency that the code did not handle.</td></tr>
+</table>
+
+<h3>Severity levels (provisional, L3-A2)</h3>
+<table>
+<tr><th>Level</th><th>Condition</th></tr>
+<tr><td>SEV1</td><td>Error rate 50% or more, or no successful responses, or a core function (for example payments) is down.</td></tr>
+<tr><td>SEV2</td><td>Error rate 5% to 50%, or p95 latency above 2 s.</td></tr>
+<tr><td>SEV3</td><td>Error rate 2% to 5%, or p95 latency 1 s to 2 s, or few users affected.</td></tr>
+</table>
+<p>Severity also depends on: the absolute count of errors, which endpoints fail (core or not), how many users are affected, how long it lasts, the trend, and how fast the error budget is used (burn rate). A full outage is about 100% of requests failing, or no successful responses. Zero incoming traffic usually points upstream (DNS, load balancer).</p>
+
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Alert</td><td><code>shop-api</code> 5xx rate 98% on all endpoints for 4 minutes</td><td><code>shop-api</code> 5xx rate 15% on <code>/checkout</code> for 8 minutes. Other endpoints normal.</td><td><code>orders</code> 5xx rate 30% for 6 minutes</td></tr>
+<tr><td>Time</td><td>02:05</td><td>14:18</td><td>09:46</td></tr>
+<tr><td>Status code</td><td>500</td><td>500</td><td>500</td></tr>
+<tr><td>Severity</td><td>SEV1 (error rate above 50%)</td><td>SEV2 (core checkout, but 15%)</td><td>SEV2 (error rate 5% to 50%)</td></tr>
+<tr><td>Outage type</td><td>Near-full outage</td><td>Partial outage, one endpoint</td><td>Partial outage</td></tr>
+</table></div>
+
+<!-- ============ 3.2 ============ -->
+<h2><span class="sec">3.2</span>Service context</h2>
+<p class="qs">Answers: Q3.1, Q3.2, Q3.4, Q3.5, Q3.29, Q3.32</p>
+
+<div class="fig">
+<svg viewBox="0 0 1040 260" role="img" aria-label="Request path of the reference application">
+<defs><marker id="r1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="md">
+<rect x="10" y="60" width="110" height="56" rx="6" class="box"/><text x="65" y="84">Browser</text><text x="65" y="100" class="lbl">front-end</text>
+<rect x="150" y="60" width="100" height="56" rx="6" class="box"/><text x="200" y="84">DNS</text><text x="200" y="100" class="lbl">name &#8594; IP</text>
+<rect x="280" y="60" width="120" height="56" rx="6" class="box"/><text x="340" y="84">Load balancer</text><text x="340" y="100" class="lbl">TLS ends here</text>
+<rect x="430" y="60" width="120" height="56" rx="6" class="box"/><text x="490" y="84">Reverse proxy</text><text x="490" y="100" class="lbl">e.g. Nginx</text>
+<rect x="580" y="40" width="200" height="96" rx="8" class="uc"/><text x="680" y="62" font-weight="600">shop-api (Python)</text><text x="680" y="80" class="lbl">app server (WSGI / ASGI)</text><text x="680" y="96" class="lbl">auth &#8594; routing &#8594; handler</text><text x="680" y="112" class="lbl">/products /cart /checkout</text><text x="680" y="128" class="lbl">reads config at request time</text>
+<rect x="830" y="20" width="190" height="50" rx="6" class="fx"/><text x="925" y="42">orders service (Python)</text><text x="925" y="58" class="lbl">downstream</text>
+<rect x="830" y="110" width="190" height="50" rx="6" class="box"/><text x="925" y="132">Database</text><text x="925" y="148" class="lbl">durable data</text>
+<rect x="580" y="190" width="200" height="50" rx="6" class="box"/><text x="680" y="212">Config store / Git</text><text x="680" y="228" class="lbl">config values, versions</text>
+</g>
+<g class="ln">
+<path d="M120,88 H148" marker-end="url(#r1)"/><path d="M250,88 H278" marker-end="url(#r1)"/><path d="M400,88 H428" marker-end="url(#r1)"/><path d="M550,88 H578" marker-end="url(#r1)"/>
+<path d="M780,70 L828,48" marker-end="url(#r1)"/><path d="M780,110 L828,134" marker-end="url(#r1)"/>
+<path d="M680,188 V138" marker-end="url(#r1)"/>
+</g>
+<g class="lbl" text-anchor="middle">
+<text x="65" y="140">fails: assets,</text><text x="65" y="152">script errors</text>
+<text x="200" y="140">fails: no traffic</text>
+<text x="340" y="140">fails: 502/503</text>
+<text x="490" y="140">fails: 502/504</text>
+<text x="925" y="88">C fails here</text>
+<text x="680" y="160">A and B fail here (500)</text>
+</g>
+</svg>
+<p class="cap">Figure 1. Component diagram of the request path. Each part can fail in a different way. Incidents A and B fail inside <code>shop-api</code>. Incident C fails in <code>orders</code>.</p>
+</div>
+
+<h3>What the components do</h3>
+<ul>
+<li><b>Entry point.</b> A load balancer and a reverse proxy (or API gateway) expose the application. Only the needed ports are open.</li>
+<li><b>Under load.</b> Components queue requests, pool database connections, scale out behind the load balancer, apply rate limits, and use circuit breakers. Every call has a timeout. Retries use backoff and a limit, or they cause a retry storm. Caches reduce database load.</li>
+<li><b>Durable data.</b> Only the database (or object storage, or attached volumes) keeps data after a restart. Caches and container disks lose it.</li>
+<li><b>Tools today.</b> Engineers use a dashboard with the golden signals for each service, SLO and error-budget views, deploy markers on graphs, and links from a service to its logs and traces.</li>
+<li><b>Integration principle.</b> Each kind of data (logs, metrics, traces, deployments, errors) has one small common interface, with one adapter for each tool.</li>
+</ul>
+
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Failing component</td><td><code>shop-api</code> request middleware</td><td><code>shop-api</code> <code>/checkout</code> handler</td><td><code>orders</code> service (3 instances)</td></tr>
+<tr><td>Dependencies</td><td>Database, <code>orders</code>. Both healthy.</td><td>Database, <code>orders</code>, payments. All healthy.</td><td>Database. Health not known.</td></tr>
+<tr><td>Users affected</td><td>All users</td><td>Users who check out with a saved gift card (about 15% of checkouts)</td><td>About 30% of order requests</td></tr>
+<tr><td>Owner</td><td colspan="3">Owning team and person on call, from the ownership list (Artifact 1). The change author is evidence only.</td></tr>
+</table></div>
+
+<!-- ============ 3.3 ============ -->
+<h2><span class="sec">3.3</span>Logs</h2>
+<p class="qs">Answers: Q3.17, Q3.20, Q3.31</p>
+<ul>
+<li><b>What a log record holds.</b> Structured fields: timestamp, severity, service, code and config version, request or trace ID, message, error type, and the full stack trace. Personal data and secrets are removed.</li>
+<li><b>Why logs alone are not enough.</b> A log is one record of one event. To know how often a failure happens, you must count and join many logs. This is slow and costly, and logs can be sampled or dropped. Metrics count at the source, so rates are cheap and exact.</li>
+<li><b>Error-tracking platform.</b> Read it through its API or webhook, with read-only access. If the platform is external, incident data is already outside the organization (open data-rule question, see Appendix).</li>
+</ul>
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Main log entry</td><td><code>ValueError: invalid literal for int() with base 10: '30s'</code> at <code>config.get_int("REQUEST_TIMEOUT_SECONDS")</code></td><td><code>KeyError: 'balance'</code> in <code>checkout/cart.py</code>, <code>apply_gift_card()</code></td><td>Logs from 2 of 3 instances are missing. The third shows only <code>500 Internal Server Error</code> lines, with no stack trace.</td></tr>
+<tr><td>Pattern</td><td>The same exception on every request, all endpoints</td><td>Only on <code>/checkout</code>, only for carts with a saved gift card</td><td>Not enough to see a pattern</td></tr>
+<tr><td>Before the change</td><td>No such errors</td><td>No such errors</td><td>Unknown</td></tr>
+</table></div>
+
+<!-- ============ 3.4 ============ -->
+<h2><span class="sec">3.4</span>Metrics</h2>
+<p class="qs">Answers: Q3.11, Q3.18, Q3.21, Q3.23, Q3.24, Q3.25, Q3.28</p>
+<table>
+<tr><th>Need</th><th>Measurement</th></tr>
+<tr><td>Request health (RED / golden signals)</td><td>A request counter labelled by status code and endpoint. Error rate = 5xx divided by all requests. Failed requests in the last hour = 5xx count over 1 hour.</td></tr>
+<tr><td>Response time</td><td>A latency <b>histogram</b>, so p50, p95, and p99 can be calculated. An average hides slow requests. A move from 100 ms to 8 s is a latency degradation. Callers often time out, so slowness becomes errors upstream.</td></tr>
+<tr><td>CPU (USE method)</td><td>CPU utilization, saturation (run-queue length), container CPU throttling, and latency that rises at the same time.</td></tr>
+<tr><td>Memory</td><td>Memory use over time, garbage collection, restarts, and out-of-memory kills.</td></tr>
+<tr><td>Job queues</td><td>Queue depth, age of the oldest job, job severity, arrival rate against processing rate, and a queue limit. Failed jobs go to a dead-letter queue.</td></tr>
+<tr><td>Metrics system</td><td>Collects measurements, stores them as time series with labels, offers a query language, keeps them for a retention period, and runs alert rules (for example Prometheus).</td></tr>
+</table>
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Error rate</td><td>0.1% &#8594; 98% at 02:01</td><td>0.1% &#8594; 15% on <code>/checkout</code> at 14:10</td><td>0.2% &#8594; 30% at 09:40</td></tr>
+<tr><td>Latency</td><td>Lower (requests fail fast)</td><td>Normal</td><td>p95 rising on one instance</td></tr>
+<tr><td>Traffic</td><td>Normal</td><td>Normal</td><td>Normal</td></tr>
+<tr><td>CPU, memory</td><td>Normal</td><td>Normal</td><td>Memory rising on one instance; others not reporting</td></tr>
+<tr><td>Database metrics</td><td>Normal</td><td>Normal</td><td>Not available</td></tr>
+</table></div>
+
+<!-- ============ 3.5 ============ -->
+<h2><span class="sec">3.5</span>Traces</h2>
+<p class="qs">Answers: Q3.19, Q3.30</p>
+<ul>
+<li>A trace ID is passed from service to service in request headers (W3C Trace Context). Each service adds a span with its timing and status. The failing span shows which service failed.</li>
+<li>Standards: OpenTelemetry for instrumentation, W3C Trace Context for the trace ID, and one structured log format that carries the trace ID, so logs and traces can be joined.</li>
+</ul>
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Failing span</td><td><code>shop-api</code> request middleware. No database span follows.</td><td><code>shop-api</code> <code>/checkout</code> handler. The payments span never starts.</td><td>None. Tracing is not turned on for <code>orders</code>.</td></tr>
+<tr><td>What it shows</td><td>The failure is inside <code>shop-api</code>, before any dependency call.</td><td>The failure is inside the checkout code, before payment.</td><td>The failing service cannot be confirmed from traces.</td></tr>
+</table></div>
+
+<!-- ============ 3.6 ============ -->
+<h2><span class="sec">3.6</span>Deployment changes</h2>
+<p class="qs">Answers: Q3.6, Q3.7, Q3.14, Q3.26</p>
+<ul>
+<li><b>Deployment steps today.</b> Merge to the main branch, CI/CD runs tests, the pipeline builds one versioned artifact (image), deploys it to staging, QA approves, then the same artifact goes to production. The rollout uses a strategy (rolling, blue-green, or canary) and health checks. Configuration enters at deploy time from the config store or the repository.</li>
+<li><b>Deployment record.</b> Each deployment records: time, service, commit or image version, config version, who made it, environment, and rollout status. (Decision; whether all of this is recorded today is open, see Appendix.)</li>
+<li><b>Config or code?</b> Compare the deployed code version and the config version before and after the failure. Same code and different config means a config effect. Confirm by reverting only the config. Config can change with no deployment (config store, feature flag), so a config change is not always a deploy event.</li>
+<li><b>Rollback.</b> Redeploy the previous artifact through the pipeline, then check that the errors stop. A rollback fails or causes harm if the deployment had a database migration that the old version cannot use. Teams avoid this with backward-compatible migrations.</li>
+</ul>
+
+<div class="fig">
+<svg viewBox="0 0 1040 250" role="img" aria-label="Timeline of the three incidents">
+<g class="md" font-weight="600"><text x="10" y="58"><tspan fill="var(--bad)">A</tspan> config</text><text x="10" y="128"><tspan fill="var(--fix)">B</tspan> code</text><text x="10" y="198"><tspan fill="var(--human)">C</tspan> no evidence</text></g>
+<g class="axis"><path d="M120,55 H1020"/><path d="M120,125 H1020"/><path d="M120,195 H1020"/></g>
+<g text-anchor="middle" class="sm">
+<rect x="160" y="30" width="150" height="20" rx="4" class="fx"/><text x="235" y="44">01:58 config v41&#8594;v42</text>
+<rect x="340" y="60" width="140" height="20" rx="4" class="bad"/><text x="410" y="74">02:01 errors start</text>
+<rect x="510" y="30" width="110" height="20" rx="4" class="hum"/><text x="565" y="44">02:05 alert</text>
+<text x="800" y="44" class="lbl">code version unchanged (a1b2c3)</text>
+<rect x="160" y="100" width="150" height="20" rx="4" class="fx"/><text x="235" y="114">14:08 deploy e4f5a6</text>
+<rect x="340" y="130" width="140" height="20" rx="4" class="bad"/><text x="410" y="144">14:10 errors start</text>
+<rect x="510" y="100" width="110" height="20" rx="4" class="hum"/><text x="565" y="114">14:18 alert</text>
+<text x="800" y="114" class="lbl">config version unchanged (v42)</text>
+<rect x="160" y="170" width="150" height="20" rx="4" class="box"/><text x="235" y="184">no deploy in 24 h</text>
+<rect x="340" y="200" width="140" height="20" rx="4" class="bad"/><text x="410" y="214">09:40 errors start</text>
+<rect x="510" y="170" width="110" height="20" rx="4" class="hum"/><text x="565" y="184">09:46 alert</text>
+<text x="800" y="184" class="lbl">config history not accessible</text>
+</g>
+<g stroke="var(--line)" stroke-width="1"><path d="M235,50 V55"/><path d="M410,55 V60"/><path d="M565,50 V55"/><path d="M235,120 V125"/><path d="M410,125 V130"/><path d="M565,120 V125"/><path d="M235,190 V195"/><path d="M410,195 V200"/><path d="M565,190 V195"/></g>
+<text x="120" y="240" class="lbl">Time runs left to right (not to scale). Purple = change. Red = errors start. Yellow = alert.</text>
+</svg>
+<p class="cap">Figure 2. Timeline of each incident. In A and B a change comes just before the errors. In C there is no change to link.</p>
+</div>
+
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Change</td><td>Deployment <code>d-101</code> at 01:58: config <code>REQUEST_TIMEOUT_SECONDS</code> changed from <code>30</code> to <code>"30s"</code> (config v41 &#8594; v42)</td><td>Deployment <code>d-202</code> at 14:08: commit <code>e4f5a6</code> changes <code>checkout/cart.py</code> (<code>apply_gift_card()</code>)</td><td>No deployment in the last 24 hours. Config change history cannot be read.</td></tr>
+<tr><td>Code version</td><td><code>a1b2c3</code> (unchanged)</td><td><code>a1b2c3</code> &#8594; <code>e4f5a6</code></td><td><code>9c8d7e</code> (unchanged for 24 h)</td></tr>
+<tr><td>Config version</td><td>v41 &#8594; v42</td><td>v42 (unchanged)</td><td>Unknown</td></tr>
+<tr><td>Database migration</td><td>None</td><td>None</td><td>Not applicable</td></tr>
+<tr><td>Author</td><td>Shown as evidence only</td><td>Shown as evidence only</td><td>&mdash;</td></tr>
+</table></div>
+
+<!-- ============ 3.7 ============ -->
+<h2><span class="sec">3.7</span>Expected root cause</h2>
+<p class="qs">Answers: Q3.7, Q3.8, Q3.13, Q3.33</p>
+<p><b>Evidence to collect before any diagnosis:</b> the alert, metrics, logs, traces, deployments and config changes in the time window, the health of dependencies, and similar past incidents.</p>
+<p><b>Mitigation and fix are different.</b> A mitigation restores the service: revert, roll back, revert only the config, restart, scale out, turn a feature flag off, fail over, or shed load. A fix removes the cause. A hotfix is a new change and has its own risk.</p>
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Expected root cause</td><td>The new config value <code>"30s"</code> is not a whole number. The code reads it as an integer on every request and fails.</td><td>The new code reads <code>gift_card["balance"]</code>. Saved gift cards from the old format have no <code>balance</code> key.</td><td><b>Cannot be established</b> with the available evidence. Possible causes (memory leak on one instance, a database problem) stay unconfirmed.</td></tr>
+<tr><td>Mitigation</td><td>Revert the config to v41.</td><td>Roll back to <code>a1b2c3</code> by redeploying the previous image.</td><td>None proposed. A human decides.</td></tr>
+<tr><td>Permanent fix</td><td>Correct value <code>30</code>, and validate config types before deploy.</td><td>Handle the old gift-card format, and add a test for it.</td><td>Unknown. First restore the missing telemetry.</td></tr>
+</table></div>
+
+<!-- ============ 3.8 ============ -->
+<h2><span class="sec">3.8</span>Supporting evidence</h2>
+<p class="qs">Answers: Q3.8, Q3.12, Q3.27, Q3.34</p>
+<p><b>How engineers investigate.</b> Compare the last working version with the current one. List recent changes. Find the affected code. Check the blast radius and connected components. Form hypotheses, and test each one by looking for evidence that would disprove it. Do not lock on the first idea. Record the hypotheses that are ruled out. Time-box each one. If several changes went out together, bisect.</p>
+<p><b>Evidence that strengthens "the deployment caused it":</b> the errors start within minutes of the deployment; the errors are only in the deployed service, and only in changed code or config paths; services that were not deployed stay healthy; a revert stops the errors.</p>
+
+<div class="fig">
+<svg viewBox="0 0 1040 200" role="img" aria-label="Hypothesis test flowchart">
+<defs><marker id="h1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="md">
+<rect x="10" y="70" width="140" height="50" rx="6" class="box"/><text x="80" y="92">Hypothesis:</text><text x="80" y="108">"the change caused it"</text>
+<polygon points="270,45 370,95 270,145 170,95" class="uc"/><text x="270" y="90">Errors start</text><text x="270" y="106">after the change?</text>
+<polygon points="490,45 590,95 490,145 390,95" class="uc"/><text x="490" y="90">Only in changed</text><text x="490" y="106">service and paths?</text>
+<polygon points="710,45 810,95 710,145 610,95" class="uc"/><text x="710" y="90">Other services</text><text x="710" y="106">healthy?</text>
+<rect x="850" y="70" width="180" height="50" rx="6" class="okb"/><text x="940" y="92">Strong. Confirm by</text><text x="940" y="108">revert: errors stop?</text>
+<rect x="390" y="165" width="420" height="30" rx="6" class="bad"/><text x="600" y="185">Contradicted: look for another cause (section 3.9)</text>
+</g>
+<g class="ln">
+<path d="M150,95 H168" marker-end="url(#h1)"/><path d="M370,95 H388" marker-end="url(#h1)"/><path d="M590,95 H608" marker-end="url(#h1)"/><path d="M810,95 H848" marker-end="url(#h1)"/>
+<path d="M270,145 V180 H388" marker-end="url(#h1)"/><path d="M490,145 V163" marker-end="url(#h1)"/><path d="M710,145 V163" marker-end="url(#h1)"/>
+</g>
+<g class="lbl"><text x="374" y="88">yes</text><text x="594" y="88">yes</text><text x="816" y="88">yes</text><text x="278" y="160">no</text><text x="498" y="158">no</text><text x="718" y="158">no</text></g>
+</svg>
+<p class="cap">Figure 3. Flowchart for testing the hypothesis "the change caused it". Each check can disprove it. Only the revert confirms it.</p>
+</div>
+
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Supporting evidence</td><td>Errors start 3 minutes after the config change. Code is unchanged. The exception names the changed key. All endpoints fail, because every request reads the value. <code>orders</code> and the database are healthy. Reverting the config to v41 stops the errors (confirmation step).</td><td>Errors start 2 minutes after the deployment. Only <code>/checkout</code> fails. The stack trace points to the changed function. The config is unchanged. Other services are healthy. The previous version had no such error. Rolling back stops the errors (confirmation step).</td><td>Weak only: one instance shows rising memory and p95 latency. There is no change to link to.</td></tr>
+</table></div>
+
+<!-- ============ 3.9 ============ -->
+<h2><span class="sec">3.9</span>Contradicting evidence</h2>
+<p class="qs">Answers: Q3.12, Q3.27, Q3.35</p>
+<p><b>Why timing alone does not prove cause.</b> It can be a coincidence. A common cause can hit at the same time (traffic spike, dependency or infrastructure failure). The deployment may not touch the failing code path.</p>
+<p><b>Evidence that contradicts "the deployment caused it"</b> (for example when logs show a database connection failure): the database fails for other services too; errors started before the deployment; the deployment did not touch database code or config; the database's own metrics show a problem.</p>
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>What would contradict the expected cause</td><td>Errors before 01:58. Other services failing too. Database errors in the logs. The same <code>ValueError</code> on config v41.</td><td>Errors on endpoints that the commit did not change. The same <code>KeyError</code> before 14:08. Payments or database failing.</td><td>Not applicable: there is no expected cause to contradict.</td></tr>
+<tr><td>Observed</td><td>None. The hypothesis holds.</td><td>None. The hypothesis holds.</td><td>Evidence conflicts: the memory hint is on one instance only, but the errors are spread across instances.</td></tr>
+</table></div>
+
+<!-- ============ 3.10 ============ -->
+<h2><span class="sec">3.10</span>Expected escalation behavior</h2>
+<p class="qs">Answers: Q3.9, Q3.15, Q3.16, Q3.36, Q3.37</p>
+
+<h3>How teams track and hand over incidents today</h3>
+<ul>
+<li><b>Life cycle:</b> detected &#8594; acknowledged &#8594; investigating &#8594; fix proposed &#8594; mitigated &#8594; resolved &#8594; postmortem. Each stage has a timestamp, so time to acknowledge, mitigate, and resolve can be measured (the baseline for Artifact 1, C1). The team tracks it in a ticketing system. Postmortems are blameless.</li>
+<li><b>Handover:</b> the first engineer hands over a note with what is known, what was tried, and what was ruled out. The incident goes to whoever knows the component: other engineers, the manager, architects, senior leads.</li>
+<li><b>When to stop and escalate:</b> every source is checked and no hypothesis passes the rubric; the evidence conflicts; or the time limit is reached (15 to 20 minutes, Artifact 2).</li>
+<li><b>When the monitoring provider is down:</b> continue with the sources that still work, mark the evidence as incomplete, lower the confidence, and escalate if a critical source is missing. Never guess.</li>
+</ul>
+
+<div class="fig">
+<svg viewBox="0 0 1040 150" role="img" aria-label="Time-based escalation path">
+<defs><marker id="e1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="md">
+<rect x="10" y="40" width="170" height="50" rx="6" class="hum"/><text x="95" y="62">Primary on-call</text><text x="95" y="78" class="lbl">paged at alert</text>
+<rect x="260" y="40" width="170" height="50" rx="6" class="hum"/><text x="345" y="62">Secondary on-call</text><text x="345" y="78" class="lbl">no ack in 15 min</text>
+<rect x="510" y="40" width="190" height="50" rx="6" class="hum"/><text x="605" y="62">Service owner / lead</text><text x="605" y="78" class="lbl">not mitigated in 30 min (SEV1: 15)</text>
+<rect x="780" y="40" width="240" height="50" rx="6" class="bad"/><text x="900" y="62">Incident commander</text><text x="900" y="78" class="lbl">SEV1: coordinates, does not fix</text>
+</g>
+<g class="ln"><path d="M180,65 H258" marker-end="url(#e1)"/><path d="M430,65 H508" marker-end="url(#e1)"/><path d="M700,65 H778" marker-end="url(#e1)"/></g>
+<text x="10" y="125" class="lbl">Provisional values (L3-A3). Each handover carries a note: what is known, what was tried, what was ruled out.</text>
+</svg>
+<p class="cap">Figure 4. Time-based escalation path today.</p>
+</div>
+
+<div class="tw"><table class="inc">
+<tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
+<tr><td>Escalate the diagnosis?</td><td>No. Confidence is high.</td><td>No. Confidence is high.</td><td><b>Yes, at once</b> when every source is checked: logs are missing, there are no traces, and config history cannot be read.</td></tr>
+<tr><td>Human step</td><td>SEV1: approve the config revert. Then approve the permanent fix.</td><td>Approve the rollback. Then approve the code fix.</td><td>Receive the escalation and investigate by hand.</td></tr>
+<tr><td>Escalate later if</td><td>Errors continue after the revert.</td><td>Errors continue after the rollback, or the deployment had a database migration (rollback not safe).</td><td>&mdash;</td></tr>
+<tr><td>Escalation note holds</td><td colspan="2">Alert, evidence, hypothesis, confidence, proposed action and its undo path.</td><td>What was checked, what is missing (logs from 2 instances, traces, config history), the weak memory hint, and the conflict in the evidence.</td></tr>
+</table></div>
+
+<!-- ============ Acceptance ============ -->
+<h2>Acceptance checks before submission</h2>
+<ul class="checks">
+<li>&#9745; Every required section above is present and complete.</li>
+<li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
+<li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
+<li>&#9745; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(None. See Appendix.)</i></li>
+<li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix.)</i></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
+</ul>
+<table><tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr><tr><th>Team</th><td>&nbsp;</td><th>Room</th><td>&nbsp;</td></tr></table>
+
+<!-- ============ Appendix ============ -->
+<h2>Appendix: supporting records from the conversation log</h2>
+<p class="qs">These records are not template sections. They hold the evidence for the acceptance checks above.</p>
+
+<h3>Assumptions (all provisional)</h3>
+<table>
+<tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
+<tr><td>L3-A1</td><td>The reference app is a Python web app behind a load balancer and reverse proxy, with a database</td><td>Dhanush</td><td>When the fixtures are built</td></tr>
+<tr><td>L3-A2</td><td>Rough SLO and severity values (section 3.1)</td><td>Dhanush</td><td>Layer 4 (quantified requirements); tune on fixtures</td></tr>
+<tr><td>L3-A3</td><td>Rough escalation path and times (Figure 4)</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>L3-A4</td><td>Incidents A, B, and C are realistic enough to be the V1 synthetic fixtures</td><td>Irfan</td><td>Layer 12</td></tr>
+</table>
+
+<h3>Open items</h3>
+<table>
+<tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
+<tr><td>Is every deployment field (section 3.6) recorded today, and where?</td><td>Manish</td><td>Layer 7</td></tr>
+<tr><td>Is every config change recorded with a time and a version?</td><td>Manish</td><td>Layer 6 / 7</td></tr>
+<tr><td>Does the data rule cover existing external tools (for example a hosted error tracker)? (open since Layer 2)</td><td>Dhanush</td><td>Before V1 build</td></tr>
+<tr><td>The exact escalation rubric</td><td>Dhanush</td><td>Layer 9</td></tr>
+</table>
+
+<h3>Consistency with Artifacts 1 and 2</h3>
+<table>
+<tr><th>Earlier artifact says</th><th>Artifact 3 adds</th><th>Status</th></tr>
+<tr><td>A1: route to the owning team and on-call; the change author is evidence only.</td><td>Kept in every incident (section 3.2, 3.6).</td><td>Consistent. The team answer to Q3.8 described QA practice before deployment; the A1 rule stays.</td></tr>
+<tr><td>A1: recovery first, by reverting the recent change.</td><td>Incident A's change is a <b>config</b> change. Config can change without a deployment.</td><td><b>Explicit decision:</b> a config revert uses the same write path as a code revert (checks and human approval). The exact mechanism is for Layer 11 (Rinisha).</td></tr>
+<tr><td>A1: Type 1 (cannot be undone) actions are not allowed.</td><td>A rollback after a database migration may not be safe.</td><td><b>Explicit decision:</b> if the deployment had a database migration, the platform does not propose a rollback. It escalates (Incident B, section 3.10).</td></tr>
+<tr><td>A1: initial severity comes from the alert.</td><td>Rough SEV levels and thresholds (L3-A2).</td><td>Consistent.</td></tr>
+<tr><td>A2: Python only; distributed systems supported; traces in scope.</td><td>All three incidents are Python services; <code>orders</code> is a downstream service; traces are used in A and B.</td><td>Consistent.</td></tr>
+<tr><td>A2: sanitized synthetic fixtures only.</td><td>Incidents A, B, and C become the fixtures (L3-A4).</td><td>Consistent.</td></tr>
+<tr><td>A2: investigation limit 15 to 20 minutes.</td><td>Used as an escalation trigger (section 3.10).</td><td>Consistent.</td></tr>
+</table>
+
+<h3>Where Claude and ChatGPT disagreed</h3>
+<p>None recorded. The team used Claude only for this layer.</p>
+</main>
+</body>
+</html>

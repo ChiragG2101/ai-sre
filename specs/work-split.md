@@ -13,7 +13,7 @@ A layer cannot start until the artifacts it is built from exist (worksheet rule)
 |---|---|---|---|---|
 | 1 | A1 Product Requirements | — | 22 | done |
 | 2 | A2 Scope and Constraints | A1 | 23 | **team** |
-| 3 | A3 Incident and Evidence Catalog | A1, A2 | 37 | Chirag |
+| 3 | A3 Incident and Evidence Catalog | A1, A2 | 37 | Chirag (covered by Dhanush) |
 | 4 | A4 Requirements | A1, A2, A3 | 34 | Chirag |
 | 5 | A5 Threat Model | A3, A4 | 28 | Chirag |
 | 6 | A6 System Architecture | A4, A5 | 39 | Manish |
