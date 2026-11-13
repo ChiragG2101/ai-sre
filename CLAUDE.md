@@ -16,7 +16,7 @@ specs/layer-NN-<name>/
   artifact-N-<name>.html   the layer's artifact (standalone HTML)
 ```
 
-- Layers 1 and 2 are done; layers 3–13 are empty (`.gitkeep`). The README "Status" line may lag behind — check the folders.
+- `PROGRESS.md` is the only place status is tracked (layer status, review findings, open items carried across layers). Update it whenever a layer moves. Review notes live in `specs/reviews/`; layer prep notes in `specs/layer-NN-*/prep-notes.md`.
 - A layer may start only when every artifact it is **Built from** exists (table in `work-split.md`). Read all of those artifacts first and stay consistent with them; record any conflict as an explicit decision.
 - Reference scenario every layer must stay consistent with: Python web app, a deployment changes a config value, HTTP 500s, monitoring detects it.
 
