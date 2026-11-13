@@ -49,7 +49,7 @@ svg .ac{fill:var(--muted)}
 <p class="sub">Building an AI SRE &middot; Layer 3: SRE Fundamentals &middot; <b>Built from.</b> Artifacts 1 and 2.</p>
 <table>
 <tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
-<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Chirag (owner), Dhanush (covered this layer), Manish, Rinisha, Irfan</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Dhanush (owner), Chirag, Manish, Rinisha, Irfan</td></tr>
 </table>
 <p class="qs">Writing style: Simplified Technical English (roughly). Decisions come from <code>conversation-log.md</code>. This layer describes how software fails and how engineers investigate it. It does not design the platform. Every section is completed for each of the three incidents:
 <span class="ia">A</span> configuration regression, <span class="ib">B</span> code regression, <span class="ic">C</span> insufficient evidence.</p>
@@ -75,7 +75,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>Summary</td><td>A deployment changes a configuration value. The application returns HTTP 500 errors on all endpoints. (This is the worksheet reference scenario.)</td><td>A deployment adds a defect in application code. A function that worked before now fails for some requests.</td><td>The application fails. The available telemetry is incomplete and does not show a cause.</td></tr>
 <tr><td>Service</td><td><code>shop-api</code></td><td><code>shop-api</code>, endpoint <code>/checkout</code></td><td><code>orders</code></td></tr>
 <tr><td>Severity</td><td>SEV1</td><td>SEV2</td><td>SEV2</td></tr>
-<tr><td>Code version</td><td>Same as before</td><td>New commit</td><td>Unknown</td></tr>
+<tr><td>Code version</td><td>Same as before</td><td>New commit</td><td><code>9c8d7e</code>, no deploy in 24 h</td></tr>
 <tr><td>Config version</td><td>Changed</td><td>Same as before</td><td>Unknown</td></tr>
 </table></div>
 
@@ -98,6 +98,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>500</td><td>The application itself failed. Usually an unhandled exception (for example a bad configuration value) or a failed dependency that the code did not handle.</td></tr>
 </table>
 
+<p><b>Service level objective (provisional, L3-A2):</b> 99.9% of requests succeed over a rolling 30 days, and p95 latency is below 300 ms.</p>
 <h3>Severity levels (provisional, L3-A2)</h3>
 <table>
 <tr><th>Level</th><th>Condition</th></tr>
@@ -109,8 +110,8 @@ svg .ac{fill:var(--muted)}
 
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
-<tr><td>Alert</td><td><code>shop-api</code> 5xx rate 98% on all endpoints for 4 minutes</td><td><code>shop-api</code> 5xx rate 15% on <code>/checkout</code> for 8 minutes. Other endpoints normal.</td><td><code>orders</code> 5xx rate 30% for 6 minutes</td></tr>
-<tr><td>Time</td><td>02:05</td><td>14:18</td><td>09:46</td></tr>
+<tr><td>Alert</td><td><code>shop-api</code> 5xx rate 98% on all endpoints for 6 minutes</td><td><code>shop-api</code> 5xx rate 15% on <code>/checkout</code> for 8 minutes. Other endpoints normal.</td><td><code>orders</code> 5xx rate 30% for 6 minutes</td></tr>
+<tr><td>Time</td><td>02:07</td><td>14:18</td><td>09:46</td></tr>
 <tr><td>Status code</td><td>500</td><td>500</td><td>500</td></tr>
 <tr><td>Severity</td><td>SEV1 (error rate above 50%)</td><td>SEV2 (core checkout, but 15%)</td><td>SEV2 (error rate 5% to 50%)</td></tr>
 <tr><td>Outage type</td><td>Near-full outage</td><td>Partial outage, one endpoint</td><td>Partial outage</td></tr>
@@ -173,7 +174,7 @@ svg .ac{fill:var(--muted)}
 <ul>
 <li><b>What a log record holds.</b> Structured fields: timestamp, severity, service, code and config version, request or trace ID, message, error type, and the full stack trace. Personal data and secrets are removed.</li>
 <li><b>Why logs alone are not enough.</b> A log is one record of one event. To know how often a failure happens, you must count and join many logs. This is slow and costly, and logs can be sampled or dropped. Metrics count at the source, so rates are cheap and exact.</li>
-<li><b>Error-tracking platform.</b> Read it through its API or webhook, with read-only access. If the platform is external, incident data is already outside the organization (open data-rule question, see Appendix).</li>
+<li><b>Error-tracking platform.</b> Read it through its API or webhook, with read-only access. A hosted error tracker that the organization already approved is allowed. The platform reaches it through allow-listed network rules (Artifact 2, review H3).</li>
 </ul>
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
@@ -233,12 +234,12 @@ svg .ac{fill:var(--muted)}
 <g text-anchor="middle" class="sm">
 <rect x="160" y="30" width="150" height="20" rx="4" class="fx"/><text x="235" y="44">01:58 config v41&#8594;v42</text>
 <rect x="340" y="60" width="140" height="20" rx="4" class="bad"/><text x="410" y="74">02:01 errors start</text>
-<rect x="510" y="30" width="110" height="20" rx="4" class="hum"/><text x="565" y="44">02:05 alert</text>
+<rect x="510" y="30" width="110" height="20" rx="4" class="hum"/><text x="565" y="44">02:07 alert</text>
 <text x="800" y="44" class="lbl">code version unchanged (a1b2c3)</text>
 <rect x="160" y="100" width="150" height="20" rx="4" class="fx"/><text x="235" y="114">14:08 deploy e4f5a6</text>
 <rect x="340" y="130" width="140" height="20" rx="4" class="bad"/><text x="410" y="144">14:10 errors start</text>
 <rect x="510" y="100" width="110" height="20" rx="4" class="hum"/><text x="565" y="114">14:18 alert</text>
-<text x="800" y="114" class="lbl">config version unchanged (v42)</text>
+<text x="800" y="114" class="lbl">config version unchanged (v17)</text>
 <rect x="160" y="170" width="150" height="20" rx="4" class="box"/><text x="235" y="184">no deploy in 24 h</text>
 <rect x="340" y="200" width="140" height="20" rx="4" class="bad"/><text x="410" y="214">09:40 errors start</text>
 <rect x="510" y="170" width="110" height="20" rx="4" class="hum"/><text x="565" y="184">09:46 alert</text>
@@ -247,14 +248,14 @@ svg .ac{fill:var(--muted)}
 <g stroke="var(--line)" stroke-width="1"><path d="M235,50 V55"/><path d="M410,55 V60"/><path d="M565,50 V55"/><path d="M235,120 V125"/><path d="M410,125 V130"/><path d="M565,120 V125"/><path d="M235,190 V195"/><path d="M410,195 V200"/><path d="M565,190 V195"/></g>
 <text x="120" y="240" class="lbl">Time runs left to right (not to scale). Purple = change. Red = errors start. Yellow = alert.</text>
 </svg>
-<p class="cap">Figure 2. Timeline of each incident. In A and B a change comes just before the errors. In C there is no change to link.</p>
+<p class="cap">Figure 2. Timeline of each incident. Each incident is an independent fixture with its own versions. In A and B a change comes just before the errors. In C there is no change to link.</p>
 </div>
 
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
 <tr><td>Change</td><td>Deployment <code>d-101</code> at 01:58: config <code>REQUEST_TIMEOUT_SECONDS</code> changed from <code>30</code> to <code>"30s"</code> (config v41 &#8594; v42)</td><td>Deployment <code>d-202</code> at 14:08: commit <code>e4f5a6</code> changes <code>checkout/cart.py</code> (<code>apply_gift_card()</code>)</td><td>No deployment in the last 24 hours. Config change history cannot be read.</td></tr>
-<tr><td>Code version</td><td><code>a1b2c3</code> (unchanged)</td><td><code>a1b2c3</code> &#8594; <code>e4f5a6</code></td><td><code>9c8d7e</code> (unchanged for 24 h)</td></tr>
-<tr><td>Config version</td><td>v41 &#8594; v42</td><td>v42 (unchanged)</td><td>Unknown</td></tr>
+<tr><td>Code version</td><td><code>a1b2c3</code> (unchanged)</td><td><code>b7c8d9</code> &#8594; <code>e4f5a6</code></td><td><code>9c8d7e</code> (unchanged for 24 h)</td></tr>
+<tr><td>Config version</td><td>v41 &#8594; v42</td><td>v17 (unchanged)</td><td>Unknown</td></tr>
 <tr><td>Database migration</td><td>None</td><td>None</td><td>Not applicable</td></tr>
 <tr><td>Author</td><td>Shown as evidence only</td><td>Shown as evidence only</td><td>&mdash;</td></tr>
 </table></div>
@@ -267,8 +268,8 @@ svg .ac{fill:var(--muted)}
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
 <tr><td>Expected root cause</td><td>The new config value <code>"30s"</code> is not a whole number. The code reads it as an integer on every request and fails.</td><td>The new code reads <code>gift_card["balance"]</code>. Saved gift cards from the old format have no <code>balance</code> key.</td><td><b>Cannot be established</b> with the available evidence. Possible causes (memory leak on one instance, a database problem) stay unconfirmed.</td></tr>
-<tr><td>Mitigation</td><td>Revert the config to v41.</td><td>Roll back to <code>a1b2c3</code> by redeploying the previous image.</td><td>None proposed. A human decides.</td></tr>
-<tr><td>Permanent fix</td><td>Correct value <code>30</code>, and validate config types before deploy.</td><td>Handle the old gift-card format, and add a test for it.</td><td>Unknown. First restore the missing telemetry.</td></tr>
+<tr><td>Mitigation</td><td>Revert the config to v41.</td><td>Roll back to <code>b7c8d9</code> by redeploying the previous image.</td><td>None proposed. A human decides.</td></tr>
+<tr><td>Permanent fix</td><td>Correct value <code>30</code>, and add type validation in <code>shop-api</code>&rsquo;s own config loader, so a bad value fails at startup, not on every request. (Validation in the pipeline is a recommendation for the owner, not an action.)</td><td>Handle the old gift-card format, and add a test for it.</td><td>Unknown. First restore the missing telemetry.</td></tr>
 </table></div>
 
 <!-- ============ 3.8 ============ -->
@@ -310,7 +311,7 @@ svg .ac{fill:var(--muted)}
 <div class="tw"><table class="inc">
 <tr><th>Item</th><th><span class="ia">A</span></th><th><span class="ib">B</span></th><th><span class="ic">C</span></th></tr>
 <tr><td>What would contradict the expected cause</td><td>Errors before 01:58. Other services failing too. Database errors in the logs. The same <code>ValueError</code> on config v41.</td><td>Errors on endpoints that the commit did not change. The same <code>KeyError</code> before 14:08. Payments or database failing.</td><td>Not applicable: there is no expected cause to contradict.</td></tr>
-<tr><td>Observed</td><td>None. The hypothesis holds.</td><td>None. The hypothesis holds.</td><td>Evidence conflicts: the memory hint is on one instance only, but the errors are spread across instances.</td></tr>
+<tr><td>Observed</td><td>None. The hypothesis holds.</td><td>None. The hypothesis holds.</td><td>30% errors fits one bad instance out of three, which supports the memory hint. But logs and metrics from the other two instances are missing, so this cannot be confirmed.</td></tr>
 </table></div>
 
 <!-- ============ 3.10 ============ -->
@@ -321,7 +322,7 @@ svg .ac{fill:var(--muted)}
 <ul>
 <li><b>Life cycle:</b> detected &#8594; acknowledged &#8594; investigating &#8594; fix proposed &#8594; mitigated &#8594; resolved &#8594; postmortem. Each stage has a timestamp, so time to acknowledge, mitigate, and resolve can be measured (the baseline for Artifact 1, C1). The team tracks it in a ticketing system. Postmortems are blameless.</li>
 <li><b>Handover:</b> the first engineer hands over a note with what is known, what was tried, and what was ruled out. The incident goes to whoever knows the component: other engineers, the manager, architects, senior leads.</li>
-<li><b>When to stop and escalate:</b> every source is checked and no hypothesis passes the rubric; the evidence conflicts; or the time limit is reached (15 to 20 minutes, Artifact 2).</li>
+<li><b>When to stop and escalate:</b> every source is checked and no hypothesis passes the rubric; the evidence conflicts; or the time limit is reached (20 minutes, Artifact 2).</li>
 <li><b>When the monitoring provider is down:</b> continue with the sources that still work, mark the evidence as incomplete, lower the confidence, and escalate if a critical source is missing. Never guess.</li>
 </ul>
 
@@ -354,7 +355,7 @@ svg .ac{fill:var(--muted)}
 <li>&#9745; Every required section above is present and complete.</li>
 <li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
 <li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
-<li>&#9745; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(None. See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
 <li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix.)</i></li>
 <li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
 </ul>
@@ -378,24 +379,33 @@ svg .ac{fill:var(--muted)}
 <tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
 <tr><td>Is every deployment field (section 3.6) recorded today, and where?</td><td>Manish</td><td>Layer 7</td></tr>
 <tr><td>Is every config change recorded with a time and a version?</td><td>Manish</td><td>Layer 6 / 7</td></tr>
-<tr><td>Does the data rule cover existing external tools (for example a hosted error tracker)? (open since Layer 2)</td><td>Dhanush</td><td>Before V1 build</td></tr>
+<tr><td>Does a deployment of the reference app include database migrations? (affects rollback safety)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>The exact escalation rubric</td><td>Dhanush</td><td>Layer 9</td></tr>
+</table>
+
+<h3>Validation status of earlier assumptions due in Layer 3</h3>
+<table>
+<tr><th>Assumption</th><th>Status after Layer 3</th></tr>
+<tr><td>L2-A6: services pass trace context</td><td>True for <code>shop-api</code> in the fixtures. <b>Deliberately false for <code>orders</code></b>: Incident C tests missing telemetry. Real world: open.</td></tr>
+<tr><td>A1 A2: alerts carry the rule, the limit, and an initial severity</td><td>Validated for the fixtures (section 3.1). Real world: open.</td></tr>
+<tr><td>L2-A1: one Git repository and one pipeline per service</td><td>Validated for the fixtures (<code>shop-api</code>, <code>orders</code>). Real world: open.</td></tr>
+<tr><td>A1 E1: the on-call schedule can be read</td><td>Still open. Add an on-call schedule to the fixtures (Dhanush).</td></tr>
 </table>
 
 <h3>Consistency with Artifacts 1 and 2</h3>
 <table>
 <tr><th>Earlier artifact says</th><th>Artifact 3 adds</th><th>Status</th></tr>
 <tr><td>A1: route to the owning team and on-call; the change author is evidence only.</td><td>Kept in every incident (section 3.2, 3.6).</td><td>Consistent. The team answer to Q3.8 described QA practice before deployment; the A1 rule stays.</td></tr>
-<tr><td>A1: recovery first, by reverting the recent change.</td><td>Incident A's change is a <b>config</b> change. Config can change without a deployment.</td><td><b>Explicit decision:</b> a config revert uses the same write path as a code revert (checks and human approval). The exact mechanism is for Layer 11 (Rinisha).</td></tr>
-<tr><td>A1: Type 1 (cannot be undone) actions are not allowed.</td><td>A rollback after a database migration may not be safe.</td><td><b>Explicit decision:</b> if the deployment had a database migration, the platform does not propose a rollback. It escalates (Incident B, section 3.10).</td></tr>
+<tr><td>A1: recovery first, by reverting the recent change.</td><td>Incident A's change is a <b>config</b> change. Config can change without a deployment.</td><td><b>Finding forwarded as a constraint</b> to Layer 4 and Layer 11 (Rinisha): a revert must also cover restoring a config version. Artifact 2 now has this action (review H1).</td></tr>
+<tr><td>A1: Type 1 (cannot be undone) actions are not allowed.</td><td>A rollback after a database migration may not be safe.</td><td><b>Finding forwarded as a constraint</b> to Layer 4 and Layer 11 (Rinisha): a rollback across a database migration can be a Type 1 action, so it must be escalated, not proposed.</td></tr>
 <tr><td>A1: initial severity comes from the alert.</td><td>Rough SEV levels and thresholds (L3-A2).</td><td>Consistent.</td></tr>
 <tr><td>A2: Python only; distributed systems supported; traces in scope.</td><td>All three incidents are Python services; <code>orders</code> is a downstream service; traces are used in A and B.</td><td>Consistent.</td></tr>
 <tr><td>A2: sanitized synthetic fixtures only.</td><td>Incidents A, B, and C become the fixtures (L3-A4).</td><td>Consistent.</td></tr>
-<tr><td>A2: investigation limit 15 to 20 minutes.</td><td>Used as an escalation trigger (section 3.10).</td><td>Consistent.</td></tr>
+<tr><td>A2: investigation limit 20 minutes.</td><td>Used as an escalation trigger (section 3.10).</td><td>Consistent.</td></tr>
 </table>
 
 <h3>Where Claude and ChatGPT disagreed</h3>
-<p>None recorded. The team used Claude only for this layer.</p>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2).</p>
 </main>
 </body>
 </html>

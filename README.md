@@ -2,8 +2,6 @@
 
 An AI Site Reliability Engineer: from an incident alert to a verified recovery. We build it layer by layer, following the *AI SRE Engineering Worksheet* (13 layers, 13 artifacts).
 
-**Status:** Layer 1 complete. Layer 2 next.
-
 ## Layout
 
 Each layer has its own folder under `specs/`:
@@ -30,6 +28,7 @@ specs/layer-NN-<name>/
 | 12 | [Reliability and Evaluation](specs/layer-12-reliability-evaluation/) | How do we establish that it works under realistic failure? | A12: Reliability and Evaluation Specification (`artifact-12-reliability-and-evaluation-spec.html`) |
 | 13 | [Implementation Planning](specs/layer-13-implementation-planning/) | How do we build it? | A13: Complete Implementation Plan (`artifact-13-implementation-plan.html`) |
 
+Progress (the only place status is tracked): [PROGRESS.md](PROGRESS.md)  
 Work split and dependency order: [specs/work-split.md](specs/work-split.md)  
 Starter prompt for layer owners: [specs/starter-prompt.md](specs/starter-prompt.md)
 

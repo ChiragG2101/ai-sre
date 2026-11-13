@@ -252,7 +252,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>No recent change matches the errors, or the change cannot be reverted</td><td>Does not propose a revert. Hands over the findings. Escalates to a human.</td></tr>
 <tr><td>The review rejects the proposal</td><td>Does not apply the revert. Reports why. Escalates to a human.</td></tr>
 <tr><td>The approver and the backup approver do not answer in the set time</td><td>Does not apply the revert. Escalates.</td></tr>
-<tr><td>Errors continue after the revert</td><td>Reports that the change was not the cause. Keeps the undo path ready. Escalates to a human.</td></tr>
+<tr><td>Errors continue after the revert</td><td>Reports that the change may not be the only cause (the revert can be incomplete, or the configuration may not have reloaded). Keeps the undo path ready. Escalates to a human.</td></tr>
 <tr><td>The incident recovers by itself during the investigation</td><td>Marks the incident "recovered without action". Watches the signals for the set period. Finishes the root-cause report.</td></tr>
 <tr><td>The fix fails in the non-production copy, the copy cannot reproduce the problem, or the review rejects the fix</td><td>Does not apply the fix. The service stays on the reverted version. Closes the incident with the fix as a recommendation. Tells the owner.</td></tr>
 <tr><td>The human declines the fix</td><td>Does not apply the fix. Closes the incident with the fix as a recommendation.</td></tr>
@@ -361,7 +361,7 @@ svg .ac{fill:var(--muted)}
 <h3>What the platform can do in V1</h3>
 <ul>
 <li><b>Read:</b> the platform can read evidence from the affected service and from related services.</li>
-<li><b>Write:</b> the platform has <b>two</b> production actions in V1, each after human approval: (1) revert the most recent change to the last known-good version; (2) apply an approved permanent fix (a code or configuration change) that was proven in a non-production copy. Each action has an undo path.</li>
+<li><b>Write:</b> the platform has <b>two</b> production actions in V1, each after human approval: (1) revert the most recent change: redeploy the last known-good version, or restore the previous configuration version in the config store; (2) apply an approved permanent fix (a code or configuration change) that was proven in a non-production copy. Each action has an undo path.</li>
 <li><b>Trigger:</b> the platform listens for alert events. It does not depend on one channel (email, chat, or ticket). It can send findings to the channel of the alert and to the incident record.</li>
 </ul>
 
@@ -447,12 +447,12 @@ svg .ac{fill:var(--muted)}
 <tr><td>Stop the platform or take over, at any step</td><td>Humans always keep control.</td></tr>
 <tr><td>Receive an escalation</td><td>The platform cannot continue by itself.</td></tr>
 </table>
-<div class="note"><b>Decision.</b> V1 has no allow list. A human approves <b>every</b> production change, <b>every</b> time. The approver is the on-call engineer or the service owner. The approver can be the author of the change.</div>
+<div class="note"><b>Decision.</b> V1 has no allow list. A human approves <b>every</b> production change, <b>every</b> time. The approver is the on-call engineer or the service owner. The approver can be the author of the change. Rationale: at 2 AM the author is often the only person on call; the other controls still apply (a review by a different model, policy checks, an undo path, and the audit trail). The threat model (Layer 5) checks if self-approval must be forbidden for SEV1.</div>
 
-<h3>How the platform decides (decision models)</h3>
-<p>The platform uses two known decision models. One sets how careful an action must be. The other sets how deep the reasoning must be.</p>
+<h3>How the platform decides (decision policies)</h3>
+<p>The platform uses two known decision policies. One sets how careful an action must be. The other sets how deep the reasoning must be.</p>
 <table>
-<tr><th>Model</th><th>Question it answers</th><th>Rule in V1</th></tr>
+<tr><th>Policy</th><th>Question it answers</th><th>Rule in V1</th></tr>
 <tr><td><b>Type 1 / Type 2 decisions</b> (one-way door / two-way door)</td><td>Can the action be undone?</td><td><b>Type 2</b> (can be undone): reading evidence, a revert, and a permanent fix with an undo path. A revert and a fix still need human approval.<br><b>Type 1</b> (cannot be undone): deletion and irreversible changes. Not allowed in V1.</td></tr>
 <tr><td><b>System 1 / System 2 thinking</b> (fast / slow)</td><td>How much reasoning does this case need?</td><td><b>System 1 (fast):</b> fixed escalation rules (policies) are checked first. Example: no recent change matches the errors, so escalate.<br><b>System 2 (slow):</b> when no rule decides, the platform scores the evidence with a rubric that has context and guidance.<br><b>Gate:</b> a low rubric score, a new kind of incident, or a conflict in the evidence sends the incident to a human.</td></tr>
 </table>
@@ -557,7 +557,7 @@ svg .ac{fill:var(--muted)}
 <li>&#9745; Every required section above is present and complete.</li>
 <li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
 <li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
-<li>&#9745; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(None. See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
 <li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(No earlier artifact exists.)</i></li>
 <li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
 </ul>
@@ -572,23 +572,25 @@ svg .ac{fill:var(--muted)}
 <table>
 <tr><th>ID</th><th>Item</th><th>Type</th><th>Owner</th><th>Validate when</th></tr>
 <tr><td>A1</td><td>A service-ownership list exists, or the team can create it and keep it current</td><td>Assumption</td><td>Dhanush</td><td>Before Layer 2 closes. Check with one real team.</td></tr>
-<tr><td>A2</td><td>Alerts reach the platform with the rule, the limit that was broken, and an initial severity</td><td>Assumption</td><td>Chirag</td><td>Layer 3 (alert catalog)</td></tr>
-<tr><td>A3</td><td>Fallback for an unmapped service or an old list</td><td>Unknown</td><td>Chirag</td><td>Layer 4</td></tr>
+<tr><td>A2</td><td>Alerts reach the platform with the rule, the limit that was broken, and an initial severity</td><td>Assumption</td><td>Dhanush</td><td>Layer 3 (alert catalog)</td></tr>
+<tr><td>A3</td><td>Fallback for an unmapped service or an old list</td><td>Unknown</td><td>Dhanush</td><td>Layer 4</td></tr>
 <tr><td>B1</td><td>A non-production copy is available and can reproduce the problem. Required to prove a fix; optional for a revert</td><td>Assumption</td><td>Dhanush</td><td>Layer 2 (Q2.14)</td></tr>
 <tr><td>B3</td><td>Numbers for the loop limits (time, steps, cost)</td><td>Unknown</td><td>Dhanush</td><td>Layer 2 (Q2.16, Q2.18)</td></tr>
 <tr><td>B4</td><td>The undo path for a revert and for a fix, and how the platform knows the last known-good version</td><td>Unknown</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>A5</td><td>How business impact is measured (users affected, lost income, SLA)</td><td>Unknown</td><td>Irfan</td><td>Layer 12</td></tr>
+<tr><td>M11</td><td>Must self-approval be forbidden for SEV1? (separation of duties)</td><td>Unknown</td><td>Dhanush</td><td>Layer 5 (threat model)</td></tr>
 <tr><td>C1</td><td>Baseline: time to diagnose and recover today (from past incidents, or a timed manual run)</td><td>Unknown</td><td>Irfan</td><td>Before targets are set</td></tr>
 <tr><td>C2</td><td>Target values for each outcome measure</td><td>Unknown</td><td>Irfan</td><td>After C1, in Layer 12</td></tr>
 <tr><td>C3</td><td>Who decides that a diagnosis was correct, and against what</td><td>Unknown</td><td>Irfan</td><td>Layer 12</td></tr>
 <tr><td>C4</td><td>The period that signals must stay healthy after a revert</td><td>Unknown</td><td>Rinisha</td><td>Layer 11 (independent verification)</td></tr>
 <tr><td>D3</td><td>How long incident records are kept</td><td>Unknown</td><td>Manish</td><td>Layer 7</td></tr>
-<tr><td>E1</td><td>An on-call schedule exists, and the platform can read it</td><td>Assumption</td><td>Chirag</td><td>Layer 3</td></tr>
+<tr><td>E1</td><td>An on-call schedule exists, and the platform can read it</td><td>Assumption</td><td>Dhanush</td><td>Layer 3</td></tr>
 <tr><td>E2</td><td>Past incidents and knowledge documents exist, and are accurate and current</td><td>Assumption</td><td>Irfan</td><td>Layer 10 (retrieval)</td></tr>
-<tr><td>E3</td><td>The exact escalation rules, the rubric content, and the gate limits (decision models chosen: Type 1/2 and System 1/2)</td><td>Unknown</td><td>Dhanush</td><td>Layer 9 (evidence-based reasoning)</td></tr>
+<tr><td>E3</td><td>The exact escalation rules, the rubric content, and the gate limits (decision policies chosen: Type 1/2 and System 1/2)</td><td>Unknown</td><td>Dhanush</td><td>Layer 9 (evidence-based reasoning)</td></tr>
 <tr><td>E4</td><td>The "normal level" for the recovery check, and how low traffic is handled</td><td>Unknown</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>E6</td><td>The rule that groups related alerts into one incident</td><td>Unknown</td><td>Manish</td><td>Layer 7 (events)</td></tr>
 <tr><td>E7</td><td>How long the platform watches a self-recovered incident</td><td>Unknown</td><td>Dhanush</td><td>Layer 8 (state machine)</td></tr>
-<tr><td>E8</td><td>Handling of secrets and personal data in evidence (section 1.3). Decided; check it against the threats</td><td>Decision</td><td>Chirag</td><td>Layer 5 (threat model)</td></tr>
+<tr><td>E8</td><td>Handling of secrets and personal data in evidence (section 1.3). Decided; check it against the threats</td><td>Decision</td><td>Dhanush</td><td>Layer 5 (threat model)</td></tr>
 <tr><td>E11</td><td>Safety measures: wrong-change rate and escalation rate. Decided; set targets</td><td>Decision</td><td>Irfan</td><td>Layer 12</td></tr>
 <tr><td>F1</td><td>Approval timeout values, and the backup approver order</td><td>Unknown</td><td>Rinisha</td><td>Layer 11 (human approval)</td></tr>
 <tr><td>F2</td><td>The platform cost per incident</td><td>Unknown</td><td>Irfan</td><td>Layer 10 (inference budgets)</td></tr>
@@ -608,7 +610,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>Related alerts are grouped into one incident.</td><td>1.3, 1.4</td></tr>
 <tr><td>A self-recovered incident is marked "recovered without action".</td><td>1.3, 1.5</td></tr>
 <tr><td>A human can stop the platform or take over at any step.</td><td>1.4, 1.5</td></tr>
-<tr><td>Decision models: Type 1 / Type 2 (reversibility) sets how careful an action must be. System 1 / System 2 (fast rules, then a rubric) sets when to escalate.</td><td>1.5</td></tr>
+<tr><td>Decision policies: Type 1 / Type 2 (reversibility) sets how careful an action must be. System 1 / System 2 (fast rules, then a rubric) sets when to escalate.</td><td>1.5</td></tr>
 <tr><td>The platform never reads secret values. Secrets and personal data are removed from evidence.</td><td>1.3</td></tr>
 <tr><td>Wrong-change rate and escalation rate are safety measures.</td><td>1.6</td></tr>
 <tr><td>The loop has limits for time, steps, and cost. At the limit, the platform escalates.</td><td>1.3, 1.5</td></tr>
@@ -620,7 +622,7 @@ svg .ac{fill:var(--muted)}
 </table>
 
 <h3>Where Claude and ChatGPT disagreed</h3>
-<p>None recorded. The team used Claude only for this layer. Add rows here if a second agent is used.</p>
+<p><b>Pending.</b> Only Claude was used so far. The worksheet method needs a separate ChatGPT pass on each question (review finding H2). Disagreements and the team's resolution go here after that pass.</p>
 </main>
 </body>
 </html>

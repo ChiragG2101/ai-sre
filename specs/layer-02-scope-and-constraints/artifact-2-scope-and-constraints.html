@@ -78,17 +78,18 @@ svg .ac{fill:var(--muted)}
 <tr><th>Item</th><th>V1 scope</th><th>Label</th></tr>
 <tr><td>Organizations</td><td>One engineering organization. One ownership list and one on-call schedule.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Infrastructure</td><td>Cloud and private infrastructure are both supported. The demo runs on <b>internal (private) infrastructure</b>.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>How the platform reaches infrastructure</td><td>Only through the existing CI/CD pipeline. The platform never touches infrastructure directly. So the type of infrastructure does not change the platform.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Data location</td><td>Incident data must not leave the organization.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: team rule (Q2.12)</span></td></tr>
+<tr><td>How the platform reaches infrastructure</td><td>Only through the existing CI/CD pipeline, or by restoring a config version in the config store (both after approval). The platform never touches infrastructure directly. So the type of infrastructure does not change the platform.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Data location</td><td>Incident data must not go to a new external party, for example an external model API.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: team rule (Q2.12)</span></td></tr>
+<tr><td>Hosted tools</td><td>Tools that the organization already uses and approved can be internal <b>or hosted</b> (monitoring, Git, CI/CD, error tracker, chat). The platform reaches a hosted tool through allow-listed inbound and outbound network rules. Nothing else in the platform changes. The data is already in that tool by the organization&rsquo;s choice.</td><td><span class="L D">Decision</span> <span class="qs">review H3</span></td></tr>
 </table>
 
 <div class="fig">
 <svg viewBox="0 0 1000 580" role="img" aria-label="Context diagram with the organization boundary">
 <defs><marker id="c1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker><marker id="c1b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="var(--bad)"/></marker></defs>
 <rect x="15" y="30" width="815" height="535" rx="12" class="bound"/>
-<text x="30" y="52" class="md" font-weight="600" fill="var(--fix)">Organization boundary: incident data must not leave</text>
+<text x="30" y="52" class="md" font-weight="600" fill="var(--fix)">Trust boundary: no incident data to new external parties</text>
 <g text-anchor="middle" class="md">
-<rect x="40" y="75" width="180" height="50" rx="6" class="hum"/><text x="130" y="96">Engineers</text><text x="130" y="112" class="lbl">CLI, HTTP API, chat</text>
+<rect x="40" y="75" width="180" height="50" rx="6" class="hum"/><text x="130" y="96">Engineers</text><text x="130" y="112" class="lbl">CLI, HTTP API (chat: open, L11)</text>
 <rect x="40" y="215" width="180" height="60" rx="6" class="box"/><text x="130" y="238">Monitoring</text><text x="130" y="254" class="lbl">logs, metrics, traces</text>
 <rect x="320" y="225" width="230" height="90" rx="8" class="uc"/><text x="435" y="258" font-weight="600">AI SRE platform</text><text x="435" y="276" class="lbl">modular monolith, Docker</text><text x="435" y="292" class="lbl">no production credentials</text>
 <rect x="320" y="450" width="230" height="70" rx="6" class="uc"/><text x="435" y="476">Self-hosted inference</text><text x="435" y="494" class="lbl">existing GPUs: main + reviewer model</text>
@@ -118,15 +119,15 @@ svg .ac{fill:var(--muted)}
 <text x="232" y="282">read (API, MCP)</text>
 <text x="560" y="180">read; branch + PR</text>
 <text x="565" y="236">run pipeline</text>
-<text x="565" y="320">read changes</text><text x="565" y="333">(no secret values)</text>
+<text x="565" y="320">read changes; restore a</text><text x="565" y="333">version (after approval)</text>
 <text x="733" y="400">deploys</text>
 <text x="200" y="360">prove the fix</text>
 <text x="443" y="400">model calls</text>
 <text x="590" y="400" fill="var(--bad)">no direct access</text>
-<text x="660" y="560" fill="var(--bad)">blocked: data must not leave</text>
+<text x="660" y="560" fill="var(--bad)">blocked: new external party</text>
 </g>
 </svg>
-<p class="cap">Figure 1. Context diagram. Every part is inside the organization boundary. Writes reach production only through the CI/CD pipeline. Red dashed = not allowed.</p>
+<p class="cap">Figure 1. Context diagram. The tools can be internal, or hosted tools that the organization already approved (reached through allow-listed network rules). Writes reach production only through the CI/CD pipeline or a config-store version restore, after approval. Red dashed = not allowed.</p>
 </div>
 
 <h3>Integrations</h3>
@@ -135,7 +136,7 @@ svg .ac{fill:var(--muted)}
 <tr><td>Monitoring (logs, metrics, traces)</td><td>Webhook: the monitoring system pushes alert events to the platform listener. API and MCP: the agent pulls more data during the investigation.</td><td>Read only</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Git repositories</td><td>MCP and API. A mapping links each service to its repository.</td><td>Read. Write = a branch and a pull request, after checks and approval.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>CI/CD pipeline</td><td>MCP and API. A mapping links each repository to its pipeline. The platform reads the deployment history.</td><td>Read. Write = run the pipeline, after checks and approval.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Config store</td><td>API or MCP. A configuration change is found by Git diff <b>or</b> in the config store.</td><td>Read the change history. Never read secret values.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Config store</td><td>API or MCP. A configuration change is found by Git diff <b>or</b> in the config store.</td><td>Read the change history. Never read secret values. Write = restore a previous config version, after checks and approval.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Platform credentials</td><td>Kept in a secret store. Least privilege. Never shown to a model.</td><td>&mdash;</td><td><span class="L D">Decision</span></td></tr>
 </table>
 
@@ -160,8 +161,10 @@ svg .ac{fill:var(--muted)}
 <tr><td>User interface</td><td>A CLI and an HTTP API. No dashboard.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Platform deployment</td><td>Docker only. No Kubernetes. Scale later when the load needs it.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Platform structure</td><td>A modular monolith in one repository, with clear module boundaries. A module can be deployed on its own later if its load needs it.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Production access</td><td>The agent has <b>no access</b> to the production environment and holds <b>no production credentials</b>.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 1 (1.5, 1.7)</span></td></tr>
-<tr><td>Write path</td><td>The agent can use write tools, but <b>every write goes through checks and human approval</b>. The checks are enforced outside the agent. A revert re-runs the pipeline at the last known-good version. A fix is a branch and a pull request that the pipeline deploys. Nothing is pushed directly to the main branch or to production.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 1 (1.5)</span></td></tr>
+<tr><td>Production access</td><td>The agent has <b>no access</b> to the production environment and holds <b>no production credentials</b>.</td><td><span class="L D">Decision</span> <span class="qs">rationale: Q2.14; matches the approval rule in Artifact 1</span></td></tr>
+<tr><td>Write path</td><td>The agent can use write tools, but <b>every write goes through checks and human approval</b>. The checks are enforced outside the agent. A revert is one of two actions: (1) redeploy the last known-good artifact through the pipeline, or (2) restore the previous config version in the config store (undo: restore the newer version). A fix is a branch and a pull request that the pipeline deploys. Nothing is pushed directly to the main branch or to production.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: Artifact 1 (1.5)</span></td></tr>
+<tr><td>Emergency revert path</td><td>A revert redeploys an artifact that already passed staging and QA. It goes straight to production after human approval, with no new staging or QA run. A config restore is the same. A permanent fix takes the normal path: sandbox proof, pull request, staging, QA, production. The phase 1 limit covers only proposing the revert, not the deploy time.</td><td><span class="L D">Decision</span> <span class="qs">review M1</span></td></tr>
+<tr><td>Fix merge</td><td>The platform opens the pull request. The human approver reviews and merges it. The merge is the approval for the fix. Branch protection on the main branch needs one human review. The platform can never merge. Detail: Layer 11.</td><td><span class="L D">Decision</span> <span class="qs">review M2</span></td></tr>
 <tr><td>Sandbox</td><td>A set of Docker containers, built for each incident from the same image and configuration. It holds synthetic fixtures only. It has no network route and no credentials to production. It is destroyed when the incident closes.</td><td><span class="L D">Decision</span></td></tr>
 </table>
 
@@ -173,7 +176,7 @@ svg .ac{fill:var(--muted)}
 <rect x="200" y="15" width="120" height="36" rx="6" class="box"/><text x="260" y="38">Approval gate</text>
 <rect x="370" y="15" width="120" height="36" rx="6" class="uc"/><text x="430" y="38">Reviewer model</text>
 <rect x="540" y="15" width="120" height="36" rx="6" class="hum"/><text x="600" y="38">Human approver</text>
-<rect x="710" y="15" width="120" height="36" rx="6" class="box"/><text x="770" y="38">Git / CI/CD</text>
+<rect x="710" y="15" width="120" height="36" rx="6" class="box"/><text x="770" y="38">Git / CI/CD / config</text>
 <rect x="860" y="15" width="120" height="36" rx="6" class="okb"/><text x="920" y="38">Production</text>
 </g>
 <g class="life"><path d="M90,51 V340"/><path d="M260,51 V340"/><path d="M430,51 V340"/><path d="M600,51 V340"/><path d="M770,51 V340"/><path d="M920,51 V340"/></g>
@@ -187,16 +190,16 @@ svg .ac{fill:var(--muted)}
 </g>
 <g class="dash"><path d="M430,148 H262" marker-end="url(#s1)"/><path d="M600,258 H262" marker-end="url(#s1)"/></g>
 <g class="lbl">
-<text x="100" y="78">1 request a write (revert or fix)</text>
+<text x="100" y="78">1 request a write (revert, config restore, or fix)</text>
 <text x="270" y="113">2 review the proposal</text>
 <text x="300" y="142">3 pass / reject</text>
 <text x="306" y="192">4 policy checks: scope, undo path, limits</text>
 <text x="270" y="223">5 ask for approval</text>
 <text x="300" y="252">6 approve / decline / no answer</text>
-<text x="270" y="283">7 branch + PR, or run the pipeline</text>
+<text x="270" y="283">7 branch + PR, run the pipeline, or restore a config version</text>
 <text x="780" y="313">8 deploy</text>
 </g>
-<text x="30" y="368" class="lbl">The agent never talks to production. Only the pipeline deploys. If any step fails, the write stops and the incident escalates.</text>
+<text x="30" y="368" class="lbl">The agent never talks to production. Only the pipeline deploys code; the config store restores a config version. If any step fails, the write stops and the incident escalates.</text>
 </svg>
 <p class="cap">Figure 2. Sequence diagram of the write path. Every write passes a review, policy checks, and human approval before the pipeline deploys it.</p>
 </div>
@@ -212,7 +215,10 @@ svg .ac{fill:var(--muted)}
 <tr><td>Cap during the experiments</td><td>A provisional hard cap applies, so a runaway loop cannot take the GPUs.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Concurrent incidents</td><td>3 at the start. The number is configurable. Extra incidents wait in a queue. The queue order is: highest severity first, then the oldest.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Time limit, phase 1 (propose the revert)</td><td>Shorter than the investigation limit, because recovery comes first. Provisional start: 5 minutes. Tuned by the experiments.</td><td><span class="L D">Decision</span></td></tr>
-<tr><td>Time limit, full investigation</td><td>15 to 20 minutes. Human approval waits, sandbox tests, and applying the fix are not counted.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Time limit, full investigation</td><td>20 minutes (provisional; upper end of 15 to 20). Human approval waits, sandbox tests, and applying the fix are not counted.</td><td><span class="L D">Decision</span></td></tr>
+<tr><td>Step limit</td><td>30 tool calls for each investigation (provisional; tuned by the experiments).</td><td><span class="L D">Decision</span> <span class="qs">review M7</span></td></tr>
+<tr><td>Cost limit</td><td>10 GPU-minutes for each incident (provisional; tuned by the experiments).</td><td><span class="L D">Decision</span> <span class="qs">review M7</span></td></tr>
+<tr><td>Recovery first in the queue</td><td>Recovery work (phase 1) pre-empts fix-phase work. A new SEV1 takes the slot of a running fix-phase job. That job pauses and goes back to the queue.</td><td><span class="L D">Decision</span> <span class="qs">review M8</span></td></tr>
 <tr><td>Time limit, fix phase (sandbox tests)</td><td>Not set. Tuned by the experiments.</td><td><span class="L A">Assumption</span> see 2.7</td></tr>
 </table>
 
@@ -222,7 +228,7 @@ svg .ac{fill:var(--muted)}
 
 <table>
 <tr><th>Item</th><th>V1 position</th><th>Label</th></tr>
-<tr><td>Model hosting</td><td>Self-hosted open-weight models on our own GPUs. <b>No external model API</b>, because incident data must not leave.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: data rule</span></td></tr>
+<tr><td>Model hosting</td><td>Self-hosted open-weight models on our own GPUs. <b>No external model API</b>, because incident data must not go to a new external party.</td><td><span class="L F">Fixed requirement</span> <span class="qs">source: data rule</span></td></tr>
 <tr><td>Models</td><td>One main model for the agent. A <b>different</b> model for the reviewer (Artifact 1). The decision model and the embedding model run on CPU.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Custom model</td><td>No custom model. We do not have enough data or past incidents to learn from. General models plus retrieval (RAG) are good enough. Revisit when we have enough learned incidents.</td><td><span class="L D">Decision</span></td></tr>
 <tr><td>Model interface</td><td>All model access goes through one model interface. A change of model is then a configuration change.</td><td><span class="L D">Decision</span></td></tr>
@@ -251,7 +257,7 @@ svg .ac{fill:var(--muted)}
 <h3>Assumptions that can change the architecture (Q2.22)</h3>
 <table>
 <tr><th>Assumption</th><th>What breaks if it is false</th></tr>
-<tr><td>The data rule (it can become stricter and also cover the monitoring and Git tools)</td><td>All integrations must be internal.</td></tr>
+<tr><td>The data rule (it can become stricter and forbid hosted tools too)</td><td>All integrations must be internal.</td></tr>
 <tr><td>L2-A8: self-hosted models are good enough</td><td>The agent design (Layer 9) must change, for example to a narrower agent or more fixed workflows. A cloud model is not an option.</td></tr>
 <tr><td>L2-A10: the GPUs have enough capacity</td><td>Concurrency, queueing, and latency.</td></tr>
 <tr><td>L2-A2: the pipeline can redeploy an earlier version</td><td>The full recovery-first flow.</td></tr>
@@ -271,7 +277,7 @@ svg .ac{fill:var(--muted)}
 <li><b>Kubernetes.</b> V1 uses Docker.</li>
 <li><b>Microservices for the platform.</b> V1 is a modular monolith.</li>
 <li><b>A custom or fine-tuned model.</b></li>
-<li><b>External model APIs.</b> Incident data must not leave the organization.</li>
+<li><b>External model APIs.</b> Incident data must not go to a new external party.</li>
 <li><b>A CPU fallback for the main or reviewer model.</b> The platform escalates instead.</li>
 </ol></div>
 
@@ -296,10 +302,9 @@ svg .ac{fill:var(--muted)}
 <h3>Open dependencies</h3>
 <table>
 <tr><th>Dependency</th><th>Owner</th><th>Resolve in</th></tr>
-<tr><td>Does the data rule also cover the existing external tools (for example hosted monitoring or Git)?</td><td>Dhanush</td><td>Before V1 build (Layer 6 at latest)</td></tr>
 <tr><td>Which monitoring, trace, and config store tools are used or simulated for V1</td><td>Manish</td><td>Layer 6 (technology selection)</td></tr>
-<tr><td>Exact internal setup for the demo</td><td>Dhanush</td><td>Layer 6</td></tr>
-<tr><td>Where the platform credentials are stored (secret store)</td><td>Chirag</td><td>Layer 5</td></tr>
+<tr><td>Exact internal setup for the demo</td><td>Manish</td><td>Layer 6</td></tr>
+<tr><td>Where the platform credentials are stored (secret store)</td><td>Dhanush</td><td>Layer 5</td></tr>
 <tr><td>How MCP write tools are blocked until approval (enforcement outside the agent)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Where the 2 AM approval happens (chat action, API, or CLI)</td><td>Rinisha</td><td>Layer 11</td></tr>
 <tr><td>Which open-weight models (main and reviewer), and GPU sizing</td><td>Irfan</td><td>Layer 10</td></tr>
@@ -307,6 +312,10 @@ svg .ac{fill:var(--muted)}
 <tr><td>Buffer size, provisional cap, and the phase 1 and fix-phase time limits</td><td>Irfan, Dhanush</td><td>Layer 10, Layer 8 (from the experiments)</td></tr>
 <tr><td>Platform module boundaries</td><td>Manish</td><td>Layer 6</td></tr>
 <tr><td>Trigger to move to an orchestrator or to split a module</td><td>Dhanush</td><td>Layer 13</td></tr>
+<tr><td>Which Python web framework the reference app uses</td><td>Dhanush</td><td>Fixtures (Layer 3)</td></tr>
+<tr><td>Sandbox design</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>Queue order details and pre-emption</td><td>Dhanush</td><td>Layer 8</td></tr>
+<tr><td>Trigger to revisit a custom model</td><td>Irfan</td><td>Layer 10</td></tr>
 <tr><td>When ADR files start and where they live</td><td>Team</td><td>Layer 13</td></tr>
 </table>
 
@@ -316,7 +325,7 @@ svg .ac{fill:var(--muted)}
 <li>&#9745; Every required section above is present and complete.</li>
 <li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
 <li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
-<li>&#9745; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(None. See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
 <li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix: consistency with Artifact 1.)</i></li>
 <li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
 </ul>
@@ -330,16 +339,15 @@ svg .ac{fill:var(--muted)}
 <table>
 <tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
 <tr><td>L2-A1</td><td>Every Python service has one Git repository and one CI/CD pipeline that can be mapped</td><td>Dhanush</td><td>Layer 3 fixtures</td></tr>
-<tr><td>L2-A2</td><td>The CI/CD pipeline can redeploy an earlier version on request</td><td>Dhanush</td><td>Layer 6</td></tr>
+<tr><td>L2-A2</td><td>The CI/CD pipeline can redeploy an earlier version on request</td><td>Manish</td><td>Layer 6</td></tr>
 <tr><td>L2-A3</td><td>Monitoring tools push alert events by webhook and expose data by API or MCP</td><td>Manish</td><td>Layer 6</td></tr>
 <tr><td>L2-A4</td><td>MCP servers exist, or can be written, for the monitoring, Git, and CI/CD tools</td><td>Dhanush</td><td>Layer 9 (tool architecture)</td></tr>
 <tr><td>L2-A5</td><td>Synthetic fixtures are realistic enough to evaluate diagnosis</td><td>Irfan</td><td>Layer 12</td></tr>
-<tr><td>L2-A6</td><td>Services pass trace context, so a request can be followed across services</td><td>Chirag</td><td>Layer 3 (observability)</td></tr>
-<tr><td>L2-A7</td><td>The config store has an API or MCP server with read access to its change history</td><td>Manish</td><td>Layer 6</td></tr>
+<tr><td>L2-A6</td><td>Services pass trace context, so a request can be followed across services</td><td>Dhanush</td><td>Layer 3 (observability)</td></tr>
+<tr><td>L2-A7</td><td>The config store has an API or MCP server with read access to its change history, keeps every version, and can restore a previous version</td><td>Manish</td><td>Layer 6</td></tr>
 <tr><td>L2-A8</td><td>Self-hosted open-weight models are good enough for the agent and the reviewer</td><td>Irfan</td><td>Layer 10</td></tr>
-<tr><td>L2-A9</td><td>The organization can supply and run a small GPU server for V1</td><td>Dhanush</td><td>Confirmed by Q2.15 (existing GPUs)</td></tr>
-<tr><td>L2-A10</td><td>The existing GPUs have enough capacity for 3 concurrent incidents with two models</td><td>Irfan</td><td>Q2.16 experiments</td></tr>
-<tr><td>L2-A11</td><td>15 to 20 minutes is enough for a typical investigation</td><td>Dhanush</td><td>Q2.16 experiments</td></tr>
+<tr><td>L2-A10</td><td>The existing GPUs can hold 2 models &times; 2 copies (high availability) and serve 3 concurrent incidents</td><td>Irfan</td><td>Q2.16 experiments</td></tr>
+<tr><td>L2-A11</td><td>20 minutes is enough for a typical investigation</td><td>Dhanush</td><td>Q2.16 experiments</td></tr>
 <tr><td>L2-A12</td><td>The existing GPUs are reserved for the platform, not shared</td><td>Dhanush</td><td>Before V1 build (Layer 13)</td></tr>
 <tr><td>L2-A13</td><td>V1 data volume fits one PostgreSQL instance</td><td>Manish</td><td>Q2.16 experiments, Layer 7</td></tr>
 </table>
@@ -347,17 +355,17 @@ svg .ac{fill:var(--muted)}
 <h3>Consistency with Artifact 1</h3>
 <table>
 <tr><th>Artifact 1 says</th><th>Artifact 2 adds</th><th>Status</th></tr>
-<tr><td>The platform applies an approved revert or fix (1.5).</td><td>The platform does this only through the CI/CD pipeline. The agent has no production access.</td><td>Refinement. No conflict.</td></tr>
+<tr><td>The platform applies an approved revert or fix (1.5).</td><td>The platform does this only through the CI/CD pipeline or a config-store version restore, after approval. The agent has no production access.</td><td>Refinement. No conflict.</td></tr>
 <tr><td>The reviewer uses a different model (1.5).</td><td>Both models are self-hosted. So we host two models.</td><td>Consistent. GPU sizing must include both.</td></tr>
 <tr><td>A non-production copy proves a fix (B1).</td><td>The copy is a per-incident Docker sandbox with synthetic fixtures.</td><td>Refinement. No conflict.</td></tr>
-<tr><td>Loop limits for time, steps, and cost (B3).</td><td>Phase 1 limit (provisional 5 minutes), 15 to 20 minute investigation, cap from experiments.</td><td>Values given. No conflict.</td></tr>
+<tr><td>Loop limits for time, steps, and cost (B3).</td><td>Provisional values: phase 1 5 minutes, investigation 20 minutes, 30 tool calls, 10 GPU-minutes.</td><td>Provisional values; tune by experiment.</td></tr>
 <tr><td>Cost per incident is an outcome measure (1.6).</td><td>The hardware is fixed, so the cost is measured as GPU time per incident.</td><td>Explicit decision.</td></tr>
 <tr><td>Secrets are never read (E8).</td><td>Config changes are read from Git diff or the config store, without secret values. Platform credentials are never shown to a model.</td><td>Consistent.</td></tr>
 <tr><td>The baseline comes from past incidents, or a timed manual run (C1).</td><td>V1 has no real incident data.</td><td>Explicit decision: use the timed manual run.</td></tr>
 </table>
 
 <h3>Where Claude and ChatGPT disagreed</h3>
-<p>None recorded. The team used Claude only for this layer. In Q2.12, Claude first advised a hosted model API. The team rule "incident data must not leave" overruled this. The team decided on self-hosted models.</p>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2). Note: in Q2.12, Claude first advised a hosted model API. The team rule "no incident data to a new external party" overruled this. The team decided on self-hosted models.</p>
 </main>
 </body>
 </html>

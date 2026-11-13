@@ -1,0 +1,54 @@
+# Layer 4 · Requirements — Conversation Log
+
+Built from: Artifacts 1, 2 and 3. Owner: Dhanush (from Chirag).
+Focus: separate what the system does from how well it must do it. Every requirement must be measurable.
+
+## Conversation Log
+
+| Questions | Agent | Conversation link | Decision reached | Open unknowns and owner | Artifact section |
+|---|---|---|---|---|---|
+| Q4.1 | C | (this session) | **New:** engineers can also submit an incident by CLI or HTTP API (besides alerts). After intake: validate → group/dedupe → find owner → collect evidence → hypotheses → propose revert → review → approval → apply → verify → fix phase → close (A1 1.3). Priority Must. Test: submit fixture A by API; each state reached in order. | None | Functional |
+| Q4.2 | C | (this session) | Alerts with the same key (service + alert rule + open incident) are grouped into one incident; duplicates become evidence, never a second investigation (A1 E6). Must. Test: same alert ×10 → exactly 1 investigation. | Exact grouping key and time window — Manish, Layer 7 | Functional |
+| Q4.3 | C | (this session) | Mandatory: service name (in the ownership list), alert or symptom, start time, environment. Missing field → reject with a reason (4xx). **Unmapped service → route to a fallback owner (the platform team's on-call)** *(confirmed)*; closes A1 A3. Must. Test: submit without a service → 4xx with reason. | Name of the platform team on-call rota — Dhanush, Layer 11 | Functional |
+| Q4.4 | C | (this session) | Collect from each source through its adapter, in parallel, with a timeout per source; a failed source is marked "missing" and lowers confidence (A3 Q3.36); every item gets a provenance entry. Must. Test: fixture C completes with 2 sources marked missing. | Per-source timeout value — Section C | Functional |
+| Q4.5 | C | (this session) | A hypothesis is a record: statement, supporting evidence IDs, contradicting evidence IDs, confidence, status (open / ruled out / confirmed). Must. Test: fixture A yields ≥ 1 hypothesis with linked evidence. | Data model — Manish, Layer 7 | Functional |
+| Q4.6 | C | (this session) | Fixed rules first (System 1); otherwise the model reasons over the evidence, scored by the rubric (System 2); output is a ranked list. Must. Test: on fixtures A and B the correct cause ranks #1; **target ≥ 80% top-1 accuracy on the larger fixture set** (Layer 12). | Larger fixture set — Irfan, Layer 12 | Functional |
+| Q4.7 | C | (this session) | Compare contradicting evidence first (one solid contradiction rules a hypothesis out), then support; an unresolved conflict escalates (A1 gate). Must. Test: seeded-conflict fixture → escalation. | Conflict fixture — Dhanush | Functional |
+| Q4.8 | C | (this session) | An explicit "inconclusive" result listing what was checked, what is missing, weak hints; never a guessed cause (A1 UC7, A3 C). Must. Test: fixture C → "inconclusive" with the missing list. | None | Functional |
+| Q4.9 | C | (this session) | Recovery first (revert or config restore). In the fix phase: a minimal patch plus a test that reproduces the fault, on a branch (A1 phase 2). Should. Test: fixture B patch test fails before and passes after the fix. | None | Functional |
+| Q4.10 | C | (this session) | Run in the per-incident sandbox: reproduction test, existing test suite, fixture traffic; all must pass (A2 2.3). Should. Test: sandbox report shows all passing. | Sandbox design — Rinisha, Layer 11 | Functional |
+| Q4.11 | C | (this session) | Different-model review → policy checks → human approver (on-call or owner) → PR merge = approval; silence is never approval; timeout → backup approver (A1, A2). Must. Test: no path to production without a recorded human approval. | Timeout values — Section C (Q4.32) | Functional |
+| Q4.12 | C | (this session) | Only the pipeline (redeploy / merge) or a config-store restore executes; never the agent; each execution recorded with its undo path (A2). Must. Test: audit log actor = pipeline or config store, never the agent. | Enforcement — Rinisha, Layer 11 | Functional |
+| Q4.13 | C | (this session) | Watch the alert's signals against the pre-incident level for the set period (A1 C4). Must. Test: fixture A error rate at baseline for N minutes before "Recovered". | N (watch period) — Section C | Functional |
+| Q4.14 | C | (this session) | Stop on request **within 10 seconds**; release locks; no half-applied change; record who and why; hand over the record (A1 E5). Must. Test: cancel mid-run → stopped ≤ 10 s, no pending writes. | None | Functional |
+| Q4.15 | C | (this session) | A timeline from the provenance record: every read, claim, decision, action, with timestamp, actor, evidence link; via CLI and API (A1 1.3). Must. Test: every fixture-A action appears in the timeline. | None | Functional |
+| Q4.16 | C | (this session) | Intake (webhook listener + API) availability **≥ 99.9% per month** (provisional). Monitoring retries webhooks, so an alert sent during a short outage is still accepted; humans still get the original alert. Must. Test: stop intake 2 min during a fixture run → retried alert accepted, exactly one incident. | None | Non-functional |
+| Q4.17 | C | (this session) | Each step is checkpointed when it completes; a new worker resumes from the last completed step; steps are idempotent, so no write is applied twice. Must. Test: kill the worker mid-run → resumes, no duplicate action in the audit log. | Design — Dhanush, Layer 8 | Non-functional |
+| Q4.18 | C | (this session) | If PostgreSQL is down: active investigations pause; **no production change is applied unless its audit record is saved first**; resume when it returns; if down > 5 min, notify humans through a path that does not need the database. Must. Test: stop the database mid-run → pause, no write, resume; notification after 5 min. | Notification path — Manish, Layer 6 | Non-functional |
+| Q4.19 | C | (this session) | Acknowledgement latency = alert timestamp → incident record created and owner notified. **p95 ≤ 30 s**; alert if > 60 s (provisional). Must. Test: measure over fixture runs. | None | Non-functional |
+| Q4.20 | C | (this session) | Phase 1 (propose revert) 5 min; investigation 20 min; **whole incident hard cap 60 min excluding human wait time**, then escalate (provisional). Must. Test: a stuck fixture escalates at each limit. | None | Non-functional |
+| Q4.21 | C | (this session) | Hardware is fixed (no cloud bill), so limits are per incident: **10 GPU-minutes and 30 tool calls as starting values**, plus a token cap (Q4.33). **Team note: these may not be enough — start with them and update from the experiments (Artifact 2, Q2.16).** At the limit: stop and escalate. Must. Test: a runaway fixture stops at the cap. | Final values from experiments — Irfan, Layer 10 | Non-functional |
+| Q4.22 | C | (this session) | 3 active (configurable); queue by severity then age; recovery work pre-empts fix-phase work (A2). Must. Test: 5 at once → 3 run, 2 wait; a SEV1 pre-empts a fix-phase job. | None | Non-functional |
+| Q4.23 | C | (this session) | Remove secrets and personal data before evidence is stored, shown, or sent to a model; never read secret values (A1 E8). Must. Test: seed secrets and PII in fixture logs → **0 occurrences** in stored evidence, prompts and outputs. | Redaction method — Dhanush, Layer 5 | Non-functional |
+| Q4.24 | C | (this session) | **RPO ≤ 15 min, RTO ≤ 4 h** (provisional); the append-only audit record is backed up; restore tested each quarter. Should. Test: restore drill meets both. | Backup design — Dhanush, Layer 12 (section C) | Non-functional |
+| Q4.25 | C | (this session) | Tolerated full platform outage **≤ 4 h** (humans keep the normal process); the platform's own failure alerts humans (self-monitoring). Should. Test: kill the platform → self-alert within 5 min. | Self-monitoring — Dhanush, Layer 12 (section A) | Non-functional |
+| Q4.26 | C | (this session) | Expose duration per step (intake, each evidence source, each model call, review, approval wait, deploy, verify), queue wait, tokens, GPU-minutes, tool calls, retries — per incident and as p50/p95. Must. Test: all metrics present for a fixture run. | None | Non-functional |
+| Q4.27 | C | (this session) | Per-call timeout, retries with backoff and a limit, circuit breaker; evidence marked partial and confidence lowered. Model service slow: per-call timeout, then escalate, no fallback (A2). Must. Test: slow a fixture source → run completes, marked "partial". | None | Non-functional |
+| Q4.28 | C | (this session) | API intake **p95 ≤ 200 ms** (provisional). Rationale: intake only validates, saves the record, publishes an event and returns the incident ID; processing is asynchronous. Must. | Measure in experiments — Dhanush | Quantified |
+| Q4.29 | C | (this session) | Event publication (accepted → available to workers) **p95 ≤ 1 s** (provisional). Rationale: a small part of the 30 s acknowledgement budget (Q4.19). Must. | Event design — Manish, Layer 7 | Quantified |
+| Q4.30 | C | (this session) | Maximum model-call duration **60 s**, then 1 retry, then escalate (provisional). Rationale: our own inference should answer in 5–30 s; slower means degraded (Q4.27). Must. | Model latency — Irfan, Layer 10 | Quantified |
+| Q4.31 | C | (this session) | **3 attempts per step** for malformed model output (first try + 2 retries with the parse error fed back), then escalate; every attempt counts toward the caps (provisional). Must. | None | Quantified |
+| Q4.32 | C | (this session) | Approval validity: **revert 30 min** (then re-check signals and ask again); **permanent fix 24 h** (open PR). Backup approver asked after **10 min (SEV1) / 15 min (others)**. Silence is never approval (provisional). Must. | Final values — Rinisha, Layer 11 | Quantified |
+| Q4.33 | C | (this session) | Token caps per incident, starting values: **200k input tokens, 64k output tokens** (team set output default to 64k); **32k context per call**. Final value = measured baseline × 1.5 (provisional). Must. | Depends on the chosen model's context size — Irfan, Layer 10 | Quantified |
+| Q4.34 | C | (this session) | **3 active** investigations (A2), **queue up to 20**; when full, new incidents go straight to humans ("not processed by the platform"), never dropped (provisional). Must. | None | Quantified |
+
+## Assumptions (all provisional)
+
+| # | Assumption | Owner | Validate when |
+|---|---|---|---|
+| L4-A2 | Milestones MS1 Intake and record, MS2 Diagnosis, MS3 Recovery path, MS4 Fix phase, MS5 Hardening are the right build order | Team | Layer 13 |
+| L4-A3 | Every provisional value can be measured on the synthetic fixtures | Irfan | Q2.16 experiments |
+| L4-A1 | A fixture set large enough to measure top-1 accuracy (≥ 20 incidents) can be built | Irfan | Layer 12 |
+
+## Where Claude and ChatGPT disagreed
+_Pending: ChatGPT pass not done yet (H2)._

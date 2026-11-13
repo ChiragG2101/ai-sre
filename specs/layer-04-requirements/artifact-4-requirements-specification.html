@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact 4 - Requirements Specification</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--muted:#5f5f5a;--line:#c9c9c0;--card:#fff;--accent:#1f5fbf;--accent-bg:#e6effb;--human:#b7791f;--human-bg:#fdf1d8;--bad:#b42318;--bad-bg:#fde8e6;--ok:#1b7a43;--ok-bg:#e2f4e9;--fix:#6b3fa0;--fix-bg:#efe7f8}
+@media (prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecece6;--muted:#a3a39b;--line:#46463f;--card:#1f1f1c;--accent:#7fb0f5;--accent-bg:#1b2a40;--human:#e5b25a;--human-bg:#3a2e14;--bad:#f08a80;--bad-bg:#3d1c19;--ok:#6fd199;--ok-bg:#16301f;--fix:#c4a3ef;--fix-bg:#2c2140}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:28px;margin:0 0 4px}h2{font-size:22px;margin:48px 0 4px;padding-top:16px;border-top:2px solid var(--line)}h3{font-size:17px;margin:24px 0 6px}
+.sub{color:var(--muted);margin:0 0 16px}
+.sec{display:inline-block;background:var(--accent-bg);color:var(--accent);font-weight:600;font-size:13px;padding:1px 8px;border-radius:4px;margin-right:6px}
+.qs{color:var(--muted);font-size:14px;margin:0 0 12px}
+table{border-collapse:collapse;width:100%;margin:8px 0 16px;font-size:15px}
+th,td{border:1px solid var(--line);padding:6px 10px;text-align:left;vertical-align:top}
+th{background:var(--card)}
+.tw{overflow-x:auto}
+.reg{min-width:1100px;font-size:13.5px}
+.reg td:first-child{white-space:nowrap;font-weight:600}
+.reg tr.grp td{background:var(--accent-bg);color:var(--accent);font-weight:600}
+code{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:3px;padding:0 3px}
+.fig{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px;margin:12px 0}
+.fig svg{display:block;min-width:720px;width:100%;height:auto}
+.cap{color:var(--muted);font-size:14px;margin:4px 0 0}
+.note{border-left:4px solid var(--human);background:var(--human-bg);padding:8px 12px;margin:12px 0;border-radius:0 6px 6px 0}
+ul,ol{padding-left:22px}li{margin:2px 0}
+.checks{list-style:none;padding-left:0}
+.P{display:inline-block;font-size:11px;font-weight:600;border-radius:4px;padding:0 6px}
+.Pm{background:var(--bad-bg);color:var(--bad);border:1px solid var(--bad)}
+.Ps{background:var(--human-bg);color:var(--human);border:1px solid var(--human)}
+.pv{font-size:11px;color:var(--muted);border:1px dashed var(--line);border-radius:4px;padding:0 4px;white-space:nowrap}
+svg text{fill:var(--fg);font-family:system-ui,sans-serif}
+svg .box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+svg .hum{fill:var(--human-bg);stroke:var(--human);stroke-width:1.5}
+svg .bad{fill:var(--bad-bg);stroke:var(--bad);stroke-width:1.5}
+svg .okb{fill:var(--ok-bg);stroke:var(--ok);stroke-width:1.5}
+svg .uc{fill:var(--accent-bg);stroke:var(--accent);stroke-width:1.5}
+svg .fx{fill:var(--fix-bg);stroke:var(--fix);stroke-width:1.5}
+svg .ln{stroke:var(--muted);stroke-width:1.5;fill:none}
+svg .sm{font-size:10.5px}svg .md{font-size:12.5px}svg .lbl{font-size:11px;fill:var(--muted)}
+svg .ac{fill:var(--muted)}
+@media print{body{background:#fff}.fig{break-inside:avoid}}
+</style>
+</head>
+<body>
+<main>
+<h1>Artifact 4 - Requirements Specification</h1>
+<p class="sub">Building an AI SRE &middot; Layer 4: Functional and Non-Functional Requirements &middot; <b>Built from.</b> Artifacts 1, 2 and 3.</p>
+<table>
+<tr><th>Team</th><td>&nbsp;</td><th>Breakout room</th><td>&nbsp;</td></tr>
+<tr><th>Date</th><td>&nbsp;</td><th>Members</th><td>Dhanush (owner, from Chirag), Chirag, Manish, Rinisha, Irfan</td></tr>
+</table>
+<p class="qs">Writing style: Simplified Technical English (roughly). Decisions come from <code>conversation-log.md</code>. The worksheet says: every requirement must carry each of the seven fields below. Sections 4.1 to 4.7 define the fields. The <b>requirements register</b> after them holds all 34 requirements with all seven fields. A value marked <span class="pv">provisional</span> is not measured yet. The Q2.16 experiments on the synthetic fixtures will set it.</p>
+
+<h3>Required sections</h3>
+<table>
+<tr><th>Required section</th><th>Questions this section answers</th><th>Done</th></tr>
+<tr><td>4.1 Requirement ID</td><td>Q4.1 to Q4.34 (one ID for each question)</td><td>&#9745;</td></tr>
+<tr><td>4.2 Description</td><td>Q4.1 to Q4.34</td><td>&#9745;</td></tr>
+<tr><td>4.3 Priority</td><td>Q4.1 to Q4.34</td><td>&#9745;</td></tr>
+<tr><td>4.4 Measurement</td><td>Q4.1 to Q4.34; values for Q4.16 to Q4.34</td><td>&#9745;</td></tr>
+<tr><td>4.5 Acceptance criterion</td><td>Q4.1 to Q4.34</td><td>&#9745;</td></tr>
+<tr><td>4.6 Validation method</td><td>Q4.1 to Q4.34</td><td>&#9745;</td></tr>
+<tr><td>4.7 Related milestone</td><td>Q4.1 to Q4.34</td><td>&#9745;</td></tr>
+</table>
+
+<!-- ============ 4.1 ============ -->
+<h2><span class="sec">4.1</span>Requirement ID</h2>
+<p class="qs">Answers: Q4.1 to Q4.34</p>
+<table>
+<tr><th>Prefix</th><th>Kind</th><th>Questions</th><th>Range</th></tr>
+<tr><td><code>FR</code></td><td>Functional: what the system does</td><td>Q4.1 to Q4.15</td><td>FR-01 to FR-15</td></tr>
+<tr><td><code>NFR</code></td><td>Non-functional: how well it does it</td><td>Q4.16 to Q4.27</td><td>NFR-01 to NFR-12</td></tr>
+<tr><td><code>QR</code></td><td>Quantified: a number with a rationale</td><td>Q4.28 to Q4.34</td><td>QR-01 to QR-07</td></tr>
+</table>
+<p>An ID never changes and is never used again. A removed requirement keeps its ID with the status "withdrawn".</p>
+
+<!-- ============ 4.2 ============ -->
+<h2><span class="sec">4.2</span>Description</h2>
+<p class="qs">Answers: Q4.1 to Q4.34</p>
+<p>A description says <b>what</b> the system must do, in one or two sentences, with "must". It does not say <b>how</b> to build it. It refers to the earlier decision where one exists (for example A1 E6).</p>
+
+<div class="fig">
+<svg viewBox="0 0 1150 230" role="img" aria-label="Functional requirements placed on the incident flow">
+<defs><marker id="q1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="10" y="40" width="100" height="50" rx="6" class="box"/><text x="60" y="60">Intake</text><text x="60" y="76" font-weight="600">FR-01, FR-03</text>
+<rect x="130" y="40" width="100" height="50" rx="6" class="uc"/><text x="180" y="60">Group alerts</text><text x="180" y="76" font-weight="600">FR-02</text>
+<rect x="250" y="40" width="110" height="50" rx="6" class="uc"/><text x="305" y="60">Collect evidence</text><text x="305" y="76" font-weight="600">FR-04</text>
+<rect x="380" y="40" width="120" height="50" rx="6" class="uc"/><text x="440" y="60">Hypotheses, diagnosis</text><text x="440" y="76" font-weight="600">FR-05 to FR-08</text>
+<rect x="520" y="40" width="110" height="50" rx="6" class="hum"/><text x="575" y="60">Review, approve</text><text x="575" y="76" font-weight="600">FR-11</text>
+<rect x="650" y="40" width="110" height="50" rx="6" class="uc"/><text x="705" y="60">Execute</text><text x="705" y="76" font-weight="600">FR-12</text>
+<rect x="780" y="40" width="110" height="50" rx="6" class="okb"/><text x="835" y="60">Verify recovery</text><text x="835" y="76" font-weight="600">FR-13</text>
+<rect x="910" y="40" width="110" height="50" rx="6" class="fx"/><text x="965" y="60">Patch, sandbox</text><text x="965" y="76" font-weight="600">FR-09, FR-10</text>
+<rect x="1040" y="40" width="100" height="50" rx="6" class="box"/><text x="1090" y="60">Close</text><text x="1090" y="76" font-weight="600">FR-15</text>
+<rect x="250" y="150" width="650" height="40" rx="6" class="bad"/><text x="575" y="168">Cancel or take over at any step: FR-14</text><text x="575" y="182" class="lbl">Timeline of every action: FR-15</text>
+</g>
+<g class="ln">
+<path d="M110,65 H128" marker-end="url(#q1)"/><path d="M230,65 H248" marker-end="url(#q1)"/><path d="M360,65 H378" marker-end="url(#q1)"/><path d="M500,65 H518" marker-end="url(#q1)"/><path d="M630,65 H648" marker-end="url(#q1)"/><path d="M760,65 H778" marker-end="url(#q1)"/><path d="M890,65 H908" marker-end="url(#q1)"/><path d="M1020,65 H1038" marker-end="url(#q1)"/>
+</g>
+<path class="ln" stroke-dasharray="4 4" d="M965,90 V115 H575 V92" marker-end="url(#q1)"/>
+<text x="770" y="110" class="lbl" text-anchor="middle">a fix goes back through review, approval, execute, verify</text>
+<text x="10" y="220" class="lbl">Blue = platform. Yellow = human. Green = verified. Purple = fix phase. Red = human control.</text>
+</svg>
+<p class="cap">Figure 1. Functional requirements on the incident flow. Recovery (revert or config restore) comes before the fix phase.</p>
+</div>
+
+<!-- ============ 4.3 ============ -->
+<h2><span class="sec">4.3</span>Priority</h2>
+<p class="qs">Answers: Q4.1 to Q4.34</p>
+<table>
+<tr><th>Priority</th><th>Meaning</th><th>Count</th></tr>
+<tr><td><span class="P Pm">Must</span></td><td>V1 is not acceptable without it. It is part of the recovery path, safety, or the reference scenario.</td><td>30</td></tr>
+<tr><td><span class="P Ps">Should</span></td><td>V1 needs it, but it can arrive after the recovery path works: the fix phase, backup and restore, and outage tolerance.</td><td>4</td></tr>
+</table>
+
+<!-- ============ 4.4 ============ -->
+<h2><span class="sec">4.4</span>Measurement</h2>
+<p class="qs">Answers: Q4.1 to Q4.34; the values come from Q4.16 to Q4.34</p>
+<p>A measurement names the observable quantity: a state, a count, a duration, a percentage, or "present / absent". Every measured value comes from the platform's own metrics (NFR-11) or from the audit record (FR-15).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 210" role="img" aria-label="Nested time and budget limits for one incident">
+<g text-anchor="start" class="md">
+<rect x="20" y="20" width="1110" height="44" rx="6" class="box"/><text x="30" y="47">Whole incident (human waits not counted): <tspan font-weight="600">60 min</tspan> hard cap, then escalate (NFR-05)</text>
+<rect x="20" y="74" width="400" height="44" rx="6" class="uc"/><text x="30" y="101">Investigation: <tspan font-weight="600">20 min</tspan> (NFR-05)</text>
+<rect x="20" y="128" width="110" height="44" rx="6" class="bad"/><text x="28" y="148">Phase 1:</text><text x="28" y="164" font-weight="600">5 min</text>
+<rect x="440" y="74" width="300" height="44" rx="6" class="hum"/><text x="450" y="94">Approval wait (not counted)</text><text x="450" y="110" class="lbl">revert valid 30 min; backup after 10 / 15 min (QR-05)</text>
+<rect x="760" y="74" width="370" height="44" rx="6" class="fx"/><text x="770" y="94">Fix phase: sandbox tests, patch</text><text x="770" y="110" class="lbl">fix approval valid 24 h (QR-05)</text>
+<rect x="150" y="128" width="980" height="44" rx="6" class="okb"/><text x="160" y="148">Budget for each incident (starting values, from experiments): 10 GPU-minutes, 30 tool calls,</text><text x="160" y="164">200k input tokens, 64k output tokens, 32k context per call, 60 s per model call, 3 attempts per step (NFR-06, QR-03, QR-04, QR-06)</text>
+</g>
+<text x="20" y="200" class="lbl">Not to scale. Every value is provisional until the Q2.16 experiments measure it.</text>
+</svg>
+<p class="cap">Figure 2. Nested limits for one incident. Each limit stops the work and escalates to a human.</p>
+</div>
+
+<!-- ============ 4.5 ============ -->
+<h2><span class="sec">4.5</span>Acceptance criterion</h2>
+<p class="qs">Answers: Q4.1 to Q4.34</p>
+<p>An acceptance criterion is a pass or fail statement about the measurement. A requirement passes only when its criterion is true in its validation method. A requirement with no testable criterion is not a requirement yet (worksheet focus).</p>
+
+<!-- ============ 4.6 ============ -->
+<h2><span class="sec">4.6</span>Validation method</h2>
+<p class="qs">Answers: Q4.1 to Q4.34</p>
+<table>
+<tr><th>Method</th><th>What it is</th></tr>
+<tr><td><b>Fixture test</b></td><td>Run a synthetic incident (A, B, C from Artifact 3, or a seeded variant) end to end, and check the outcome.</td></tr>
+<tr><td><b>Fault test</b></td><td>Inject a failure during a fixture run: stop a worker, the database, intake, or slow a source.</td></tr>
+<tr><td><b>Load test</b></td><td>Send many incidents or requests at the same time, and measure.</td></tr>
+<tr><td><b>Audit check</b></td><td>Inspect the audit record and timeline for required entries, or for forbidden actors.</td></tr>
+<tr><td><b>Leak scan</b></td><td>Search stored evidence, prompts, and outputs for seeded secrets and personal data.</td></tr>
+<tr><td><b>Drill</b></td><td>A planned exercise, for example a database restore, measured against the target.</td></tr>
+</table>
+
+<!-- ============ 4.7 ============ -->
+<h2><span class="sec">4.7</span>Related milestone</h2>
+<p class="qs">Answers: Q4.1 to Q4.34</p>
+<p class="qs">Provisional milestones. Layer 13 (implementation plan) confirms them (L4-A2).</p>
+<div class="fig">
+<svg viewBox="0 0 1150 150" role="img" aria-label="Milestone sequence">
+<defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="ac"/></marker></defs>
+<g text-anchor="middle" class="sm">
+<rect x="10" y="20" width="200" height="80" rx="8" class="box"/><text x="110" y="42" font-weight="600" class="md">MS1 Intake and record</text><text x="110" y="60">FR-01 to 03, FR-15</text><text x="110" y="74">NFR-01, NFR-04, NFR-11</text><text x="110" y="88">QR-01, QR-02</text>
+<rect x="240" y="20" width="200" height="80" rx="8" class="uc"/><text x="340" y="42" font-weight="600" class="md">MS2 Diagnosis</text><text x="340" y="60">FR-04 to FR-08</text><text x="340" y="74">NFR-08, NFR-12</text><text x="340" y="88">QR-03, QR-04, QR-06</text>
+<rect x="470" y="20" width="200" height="80" rx="8" class="okb"/><text x="570" y="42" font-weight="600" class="md">MS3 Recovery path</text><text x="570" y="60">FR-11 to FR-14</text><text x="570" y="74">NFR-05, NFR-06</text><text x="570" y="88">QR-05</text>
+<rect x="700" y="20" width="200" height="80" rx="8" class="fx"/><text x="800" y="42" font-weight="600" class="md">MS4 Fix phase</text><text x="800" y="60">FR-09, FR-10</text><text x="800" y="74">&nbsp;</text>
+<rect x="930" y="20" width="210" height="80" rx="8" class="hum"/><text x="1035" y="42" font-weight="600" class="md">MS5 Hardening</text><text x="1035" y="60">NFR-02, NFR-03, NFR-07</text><text x="1035" y="74">NFR-09, NFR-10</text><text x="1035" y="88">QR-07</text>
+</g>
+<g class="ln"><path d="M210,60 H238" marker-end="url(#m1)"/><path d="M440,60 H468" marker-end="url(#m1)"/><path d="M670,60 H698" marker-end="url(#m1)"/><path d="M900,60 H928" marker-end="url(#m1)"/></g>
+<text x="10" y="130" class="lbl">MS3 ends with the reference scenario recovered end to end (Artifact 1 demo, phase 1). MS4 adds the permanent fix (demo, phase 2).</text>
+</svg>
+<p class="cap">Figure 3. Provisional milestones and the requirements that each one delivers.</p>
+</div>
+
+<!-- ============ Register ============ -->
+<h2>Requirements register</h2>
+<p class="qs">All 34 requirements, each with the seven fields (4.1 to 4.7). Q = the worksheet question.</p>
+<div class="tw"><table class="reg">
+<tr><th>4.1 ID (Q)</th><th>4.2 Description</th><th>4.3 Priority</th><th>4.4 Measurement</th><th>4.5 Acceptance criterion</th><th>4.6 Validation method</th><th>4.7 Milestone</th></tr>
+<tr class="grp"><td colspan="7">Functional requirements</td></tr>
+<tr><td>FR-01 (Q4.1)</td><td>The platform must start an incident from an alert event <b>or</b> from an engineer's submission through the CLI or HTTP API. Then it runs: validate, group, find owner, collect evidence, hypotheses, propose revert, review, approval, apply, verify, fix phase, close.</td><td><span class="P Pm">Must</span></td><td>Sequence of states reached</td><td>Fixture A, submitted by API, reaches every state in order.</td><td>Fixture test</td><td>MS1</td></tr>
+<tr><td>FR-02 (Q4.2)</td><td>Alerts with the same key (service, alert rule, open incident) must join one incident. A duplicate becomes evidence. It never starts a second investigation.</td><td><span class="P Pm">Must</span></td><td>Investigations created for N identical alerts</td><td>10 identical alerts create exactly 1 investigation.</td><td>Fixture test</td><td>MS1</td></tr>
+<tr><td>FR-03 (Q4.3)</td><td>An incident must have: service (in the ownership list), alert or symptom, start time, environment. A missing field is rejected with a reason. An unmapped service goes to the fallback owner (the platform team on-call).</td><td><span class="P Pm">Must</span></td><td>Response code and reason; owner assigned</td><td>No service: 4xx with a reason. Unmapped service: fallback owner assigned.</td><td>Fixture test</td><td>MS1</td></tr>
+<tr><td>FR-04 (Q4.4)</td><td>The platform must collect evidence from each source through its adapter, in parallel, with a timeout for each source. A failed source is marked "missing" and lowers the confidence. Every item has a provenance entry.</td><td><span class="P Pm">Must</span></td><td>Sources marked missing; provenance entries</td><td>Fixture C completes, with 2 sources marked missing. Every evidence item has a provenance entry.</td><td>Fixture test, audit check</td><td>MS2</td></tr>
+<tr><td>FR-05 (Q4.5)</td><td>Each hypothesis must be a record: statement, supporting evidence IDs, contradicting evidence IDs, confidence, status (open, ruled out, confirmed).</td><td><span class="P Pm">Must</span></td><td>Hypothesis records and their links</td><td>Fixture A gives at least 1 hypothesis with linked evidence.</td><td>Fixture test</td><td>MS2</td></tr>
+<tr><td>FR-06 (Q4.6)</td><td>The platform must check fixed rules first (System 1). If no rule decides, it reasons over the evidence with a rubric (System 2). The output is a ranked list of hypotheses.</td><td><span class="P Pm">Must</span></td><td>Rank of the correct cause; top-1 accuracy</td><td>Fixtures A and B: correct cause ranks first. Larger fixture set: top-1 accuracy at least 80% <span class="pv">provisional</span>.</td><td>Fixture test (Layer 12 for the larger set)</td><td>MS2</td></tr>
+<tr><td>FR-07 (Q4.7)</td><td>The platform must compare contradicting evidence first (one solid contradiction rules a hypothesis out), then supporting evidence. An unresolved conflict must escalate.</td><td><span class="P Pm">Must</span></td><td>Outcome on a seeded conflict</td><td>The seeded-conflict fixture escalates.</td><td>Fixture test</td><td>MS2</td></tr>
+<tr><td>FR-08 (Q4.8)</td><td>An inconclusive result must say so, and list what was checked, what is missing, and weak hints. It must never show a guessed cause.</td><td><span class="P Pm">Must</span></td><td>Result type and its content</td><td>Fixture C returns "inconclusive" with the missing list, and no cause.</td><td>Fixture test</td><td>MS2</td></tr>
+<tr><td>FR-09 (Q4.9)</td><td>After recovery, the platform must write a minimal patch and a test that reproduces the fault, on a branch.</td><td><span class="P Ps">Should</span></td><td>Reproduction test result before and after the patch</td><td>Fixture B: the test fails without the patch and passes with it.</td><td>Fixture test</td><td>MS4</td></tr>
+<tr><td>FR-10 (Q4.10)</td><td>The platform must test a patch in the per-incident sandbox: reproduction test, existing test suite, and fixture traffic.</td><td><span class="P Ps">Should</span></td><td>Sandbox test report</td><td>All three test sets pass before a fix is proposed.</td><td>Fixture test</td><td>MS4</td></tr>
+<tr><td>FR-11 (Q4.11)</td><td>Every production change must pass: review by a different model, policy checks, and approval by a human (on-call or service owner). The approver merges a fix PR. Silence is never approval. A timeout goes to the backup approver.</td><td><span class="P Pm">Must</span></td><td>Changes without a recorded human approval</td><td>0 changes reach production without a recorded human approval.</td><td>Audit check, fixture test</td><td>MS3</td></tr>
+<tr><td>FR-12 (Q4.12)</td><td>Only the pipeline (redeploy or merge) or a config-store version restore must execute an approved change. The agent never does. Each execution is recorded with its undo path.</td><td><span class="P Pm">Must</span></td><td>Actor of each production change; undo path present</td><td>Actor is always the pipeline or the config store, never the agent. Every execution has an undo path.</td><td>Audit check</td><td>MS3</td></tr>
+<tr><td>FR-13 (Q4.13)</td><td>The platform must verify recovery with the alert's own signals, against the level before the incident, for a set period.</td><td><span class="P Pm">Must</span></td><td>Error rate and latency against baseline over the period</td><td>Fixture A is "Recovered" only after the signals stay at baseline for the full period <span class="pv">period: open (A1 C4)</span>.</td><td>Fixture test</td><td>MS3</td></tr>
+<tr><td>FR-14 (Q4.14)</td><td>An engineer must be able to stop an investigation at any step. The platform stops, releases locks, leaves no half-applied change, records who and why, and hands over the record.</td><td><span class="P Pm">Must</span></td><td>Time to stop; pending writes</td><td>Stopped within 10 s, with 0 pending writes.</td><td>Fault test</td><td>MS3</td></tr>
+<tr><td>FR-15 (Q4.15)</td><td>The platform must show a timeline of every read, claim, decision, and action, with timestamp, actor, and evidence link, through the CLI and API.</td><td><span class="P Pm">Must</span></td><td>Actions present in the timeline</td><td>Every action of a fixture A run appears in the timeline.</td><td>Audit check</td><td>MS1</td></tr>
+<tr class="grp"><td colspan="7">Non-functional requirements</td></tr>
+<tr><td>NFR-01 (Q4.16)</td><td>Intake (webhook listener and API) must be available. A webhook sent during a short outage must still be accepted on retry.</td><td><span class="P Pm">Must</span></td><td>Monthly availability; incidents from a retried alert</td><td>Availability at least 99.9% per month <span class="pv">provisional</span>. A 2-minute outage gives exactly 1 incident after the retry.</td><td>Fault test, metrics</td><td>MS1</td></tr>
+<tr><td>NFR-02 (Q4.17)</td><td>Each step must be saved when it completes. After a worker crash, work must resume from the last completed step, with no write applied twice.</td><td><span class="P Pm">Must</span></td><td>Run completion; duplicate actions</td><td>The run completes, with 0 duplicate actions in the audit record.</td><td>Fault test</td><td>MS5</td></tr>
+<tr><td>NFR-03 (Q4.18)</td><td>If the database is down, active investigations must pause. No production change is applied unless its audit record is saved first. They resume when the database returns. After 5 minutes, humans are notified by a path that does not need the database.</td><td><span class="P Pm">Must</span></td><td>Writes during the outage; time to notify</td><td>0 writes during the outage; resume afterwards; notification at 5 min <span class="pv">provisional</span>.</td><td>Fault test</td><td>MS5</td></tr>
+<tr><td>NFR-04 (Q4.19)</td><td>Acknowledgement latency (alert timestamp to incident record created and owner notified) must be measured and bounded.</td><td><span class="P Pm">Must</span></td><td>p95 acknowledgement latency</td><td>p95 at most 30 s; an alert fires above 60 s <span class="pv">provisional</span>.</td><td>Load test, metrics</td><td>MS1</td></tr>
+<tr><td>NFR-05 (Q4.20)</td><td>The platform must stop and escalate at each time limit: phase 1, investigation, and whole incident (human waits not counted).</td><td><span class="P Pm">Must</span></td><td>Elapsed time at escalation</td><td>Escalation at 5 min, 20 min, and 60 min <span class="pv">provisional</span>.</td><td>Fixture test (stuck fixture)</td><td>MS3</td></tr>
+<tr><td>NFR-06 (Q4.21)</td><td>The platform must stop and escalate when an incident reaches its budget.</td><td><span class="P Pm">Must</span></td><td>GPU-minutes, tool calls, tokens for each incident</td><td>Stops at 10 GPU-minutes or 30 tool calls (starting values; may not be enough; updated from experiments) or the token caps (QR-06).</td><td>Fixture test (runaway fixture)</td><td>MS3</td></tr>
+<tr><td>NFR-07 (Q4.22)</td><td>The platform must run a configurable number of investigations at once, and queue the rest by severity, then age. Recovery work must pre-empt fix-phase work.</td><td><span class="P Pm">Must</span></td><td>Active count; order of the queue; pre-emption</td><td>5 incidents at once: 3 run, 2 wait. A new SEV1 takes the slot of a fix-phase job.</td><td>Load test</td><td>MS5</td></tr>
+<tr><td>NFR-08 (Q4.23)</td><td>The platform must remove secrets and personal data before evidence is stored, shown, or sent to a model. It must never read secret values.</td><td><span class="P Pm">Must</span></td><td>Occurrences of seeded secrets and personal data</td><td>0 occurrences in stored evidence, prompts, and outputs.</td><td>Leak scan</td><td>MS2</td></tr>
+<tr><td>NFR-09 (Q4.24)</td><td>The incident store, with the append-only audit record, must be backed up and restorable.</td><td><span class="P Ps">Should</span></td><td>Data lost (RPO); time to restore (RTO)</td><td>RPO at most 15 min; RTO at most 4 h <span class="pv">provisional</span>. A restore test runs each quarter.</td><td>Drill</td><td>MS5</td></tr>
+<tr><td>NFR-10 (Q4.25)</td><td>A full platform outage must be tolerable, because humans keep the normal process. The platform's own failure must alert humans.</td><td><span class="P Ps">Should</span></td><td>Outage duration; time to self-alert</td><td>Outage at most 4 h <span class="pv">provisional</span>; self-alert within 5 min.</td><td>Fault test</td><td>MS5</td></tr>
+<tr><td>NFR-11 (Q4.26)</td><td>The platform must expose the duration of each step (intake, each source, each model call, review, approval wait, deploy, verify), queue wait, tokens, GPU-minutes, tool calls, and retries, per incident and as p50 and p95.</td><td><span class="P Pm">Must</span></td><td>Metrics present</td><td>All listed metrics exist for a fixture run.</td><td>Fixture test, metrics</td><td>MS1</td></tr>
+<tr><td>NFR-12 (Q4.27)</td><td>For a degraded dependency, the platform must use a timeout for each call, retries with backoff and a limit, and a circuit breaker. It marks evidence partial and lowers confidence. A slow model service escalates after the timeout, with no fallback.</td><td><span class="P Pm">Must</span></td><td>Run outcome with a slow source</td><td>The run completes, marked "partial". A slow model escalates.</td><td>Fault test</td><td>MS2</td></tr>
+<tr class="grp"><td colspan="7">Quantified requirements (rationale in the appendix)</td></tr>
+<tr><td>QR-01 (Q4.28)</td><td>API intake must answer fast. It only validates, saves, publishes, and returns the incident ID.</td><td><span class="P Pm">Must</span></td><td>p95 intake latency</td><td>p95 at most 200 ms <span class="pv">provisional</span>.</td><td>Load test</td><td>MS1</td></tr>
+<tr><td>QR-02 (Q4.29)</td><td>An accepted incident's event must become available to workers fast.</td><td><span class="P Pm">Must</span></td><td>p95 accepted-to-available time</td><td>p95 at most 1 s <span class="pv">provisional</span>.</td><td>Load test</td><td>MS1</td></tr>
+<tr><td>QR-03 (Q4.30)</td><td>One model call must not run too long.</td><td><span class="P Pm">Must</span></td><td>Model-call duration</td><td>At most 60 s, then 1 retry, then escalate <span class="pv">provisional</span>.</td><td>Fault test</td><td>MS2</td></tr>
+<tr><td>QR-04 (Q4.31)</td><td>The platform must limit attempts after malformed model output. Each retry gets the parse error.</td><td><span class="P Pm">Must</span></td><td>Attempts for each step</td><td>At most 3 attempts, then escalate. Each attempt counts toward the budget <span class="pv">provisional</span>.</td><td>Fixture test (malformed output)</td><td>MS2</td></tr>
+<tr><td>QR-05 (Q4.32)</td><td>An approval request must expire, and must go to the backup approver when there is no answer.</td><td><span class="P Pm">Must</span></td><td>Validity time; time to backup</td><td>Revert approval valid 30 min, then re-check and ask again. Fix approval valid 24 h. Backup after 10 min (SEV1) or 15 min (others) <span class="pv">provisional</span>.</td><td>Fixture test</td><td>MS3</td></tr>
+<tr><td>QR-06 (Q4.33)</td><td>Each incident must have cumulative token caps, and each call a context cap.</td><td><span class="P Pm">Must</span></td><td>Tokens for each incident and each call</td><td>Starting values: 200k input, 64k output for each incident; 32k context for each call. Final value = measured baseline &times; 1.5 <span class="pv">provisional</span>.</td><td>Fixture test, metrics</td><td>MS2</td></tr>
+<tr><td>QR-07 (Q4.34)</td><td>The platform must limit active investigations and the queue. When the queue is full, a new incident goes to humans and is not dropped.</td><td><span class="P Pm">Must</span></td><td>Active count; queue length; overflow handling</td><td>3 active; queue at most 20; the 21st queued incident goes to humans, marked "not processed by the platform" <span class="pv">provisional</span>.</td><td>Load test</td><td>MS5</td></tr>
+</table></div>
+
+<!-- ============ Acceptance ============ -->
+<h2>Acceptance checks before submission</h2>
+<ul class="checks">
+<li>&#9745; Every required section above is present and complete.</li>
+<li>&#9745; Every section lists the questions it answers, and every question in this layer is answered by at least one section.</li>
+<li>&#9745; Every assumption is marked provisional and has a named owner and a condition under which it will be validated. <i>(See Appendix.)</i></li>
+<li>&#9744; Every disagreement between Claude and ChatGPT that affected a decision is recorded with the team&rsquo;s resolution. <i>(Open: the ChatGPT pass is not done yet. Review finding H2.)</i></li>
+<li>&#9745; The artifact is consistent with every artifact it is built from; any conflict is recorded as an explicit decision. <i>(See Appendix.)</i></li>
+<li>&#9745; The artifact was produced with the team&rsquo;s coding agent and is saved in the team repository.</li>
+</ul>
+<table><tr><th>Reviewed by</th><td>&nbsp;</td><th>Date</th><td>&nbsp;</td></tr><tr><th>Team</th><td>&nbsp;</td><th>Room</th><td>&nbsp;</td></tr></table>
+
+<!-- ============ Appendix ============ -->
+<h2>Appendix: supporting records from the conversation log</h2>
+<p class="qs">These records are not template sections. They hold the evidence for the acceptance checks above.</p>
+
+<h3>Rationale for the quantified values</h3>
+<table>
+<tr><th>ID</th><th>Value</th><th>Rationale</th></tr>
+<tr><td>QR-01</td><td>200 ms</td><td>Intake does no processing. All work after intake is asynchronous.</td></tr>
+<tr><td>QR-02</td><td>1 s</td><td>A small part of the 30 s acknowledgement budget (NFR-04).</td></tr>
+<tr><td>QR-03</td><td>60 s, 1 retry</td><td>Our own inference should answer in 5 to 30 s. Slower means degraded, and NFR-12 says escalate.</td></tr>
+<tr><td>QR-04</td><td>3 attempts</td><td>Feeding back the parse error usually fixes the format. More attempts waste the budget.</td></tr>
+<tr><td>QR-05</td><td>30 min / 24 h; 10 / 15 min</td><td>The evidence for a revert goes stale fast. A fix can wait, because the service is already recovered. Backup times match Artifact 3 (L3-A3).</td></tr>
+<tr><td>QR-06</td><td>200k / 64k / 32k</td><td>Measure first, then add a buffer (Artifact 2, Q2.16). Output default set by the team to 64k. The call cap stops one large log from filling the context.</td></tr>
+<tr><td>QR-07</td><td>3 active, queue 20</td><td>Matches the existing GPU capacity (L2-A10). Overflow to humans keeps the platform additive and safe.</td></tr>
+</table>
+
+<h3>Assumptions (all provisional)</h3>
+<table>
+<tr><th>ID</th><th>Assumption</th><th>Owner</th><th>Validate when</th></tr>
+<tr><td>L4-A1</td><td>A fixture set large enough to measure top-1 accuracy (at least 20 incidents) can be built</td><td>Irfan</td><td>Layer 12</td></tr>
+<tr><td>L4-A2</td><td>The five milestones MS1 to MS5 are the right build order</td><td>Team</td><td>Layer 13</td></tr>
+<tr><td>L4-A3</td><td>Every provisional value in the register can be measured on the synthetic fixtures</td><td>Irfan</td><td>Q2.16 experiments</td></tr>
+</table>
+
+<h3>Open items</h3>
+<table>
+<tr><th>Item</th><th>Owner</th><th>Resolve in</th></tr>
+<tr><td>Recovery watch period (FR-13; A1 C4)</td><td>Rinisha</td><td>Layer 11</td></tr>
+<tr><td>Exact alert-grouping key and time window (FR-02)</td><td>Manish</td><td>Layer 7</td></tr>
+<tr><td>Timeout for each evidence source (FR-04)</td><td>Manish</td><td>Layer 7</td></tr>
+<tr><td>Name of the platform team on-call rota for the fallback owner (FR-03)</td><td>Dhanush</td><td>Layer 11</td></tr>
+<tr><td>Seeded-conflict fixture (FR-07)</td><td>Dhanush</td><td>Layer 12</td></tr>
+<tr><td>Final budget and token values from experiments (NFR-06, QR-06)</td><td>Irfan</td><td>Layer 10</td></tr>
+<tr><td>Notification path that does not need the database (NFR-03)</td><td>Manish</td><td>Layer 6</td></tr>
+</table>
+
+<h3>Consistency with Artifacts 1, 2 and 3</h3>
+<table>
+<tr><th>Earlier artifact says</th><th>Artifact 4 adds</th><th>Status</th></tr>
+<tr><td>A1 1.5: the platform listens for alert events.</td><td>FR-01 adds a second trigger: an engineer's submission through the CLI or API.</td><td><b>Explicit decision</b> (Q4.1). It does not change how alerts work.</td></tr>
+<tr><td>A1 A3: fallback for an unmapped service was open.</td><td>FR-03: the fallback owner is the platform team on-call.</td><td>Closes A1 A3.</td></tr>
+<tr><td>A1 E5: a human can stop the platform at any step.</td><td>FR-14: stop within 10 s, with no pending writes.</td><td>Consistent. Adds a number.</td></tr>
+<tr><td>A2 2.4: phase 1 5 min, investigation 20 min, 30 tool calls, 10 GPU-minutes.</td><td>NFR-05, NFR-06 use the same values. NFR-05 adds a 60 min whole-incident cap. QR-06 adds token caps.</td><td>Consistent. New caps are explicit decisions.</td></tr>
+<tr><td>A2 2.3: write path through the pipeline or a config-store restore; the approver merges the PR.</td><td>FR-11, FR-12.</td><td>Consistent.</td></tr>
+<tr><td>A2 2.5: no fallback when inference is down.</td><td>NFR-12: a slow model escalates after the timeout.</td><td>Consistent.</td></tr>
+<tr><td>A3 3.1: rough SLO and severity values.</td><td>Not changed here. They stay provisional (L3-A2).</td><td>Consistent.</td></tr>
+<tr><td>A3 3.10: escalation when sources are exhausted or evidence conflicts.</td><td>FR-07, FR-08.</td><td>Consistent.</td></tr>
+</table>
+
+<h3>Where Claude and ChatGPT disagreed</h3>
+<p><b>Pending:</b> the ChatGPT pass is not done yet (review finding H2).</p>
+</main>
+</body>
+</html>

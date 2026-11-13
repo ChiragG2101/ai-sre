@@ -31,7 +31,7 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 | A2 | Alerts always reach the platform in a usable form (rule + threshold) | Assumption | TBD | Layer 3 alert catalogue |
 | A3 | Ownership of an unmapped service / stale mapping | Unknown | TBD | Decide fallback in Layer 4 requirements |
 | A4 | **Decided:** route to owning team + on-call; change author shown as evidence only, not as assignee | Decision | Team | Revisit if teams find it unhelpful in use |
-| A5 | Customer/business impact measurement (users affected, revenue, SLA) | Unknown | TBD | Section C (success definition) |
+| A5 | Customer/business impact measurement (users affected, revenue, SLA) | Unknown | Irfan (Layer 12) | Section C (success definition) |
 
 ### Decisions B
 
@@ -94,7 +94,7 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 - **Baseline fallback:** timed manual run of the reference scenario if no past incidents exist.
 - **Cost per incident** added as an outcome measure.
 - **Reviewer** uses a different model from the main agent.
-- **E3 decision models (researched):** Type 1 / Type 2 decisions (one-way / two-way door) decide how careful an action must be: Type 2 (reversible) actions such as a revert need approval; Type 1 (irreversible) actions are prohibited in V1. System 1 / System 2 thinking decides escalation: fast fixed rules first, then a rubric with context and guidance; a gate (low score, new kind of incident, conflicting evidence) sends the incident to a human.
+- **E3 decision policies (researched):** Type 1 / Type 2 decisions (one-way / two-way door) decide how careful an action must be: Type 2 (reversible) actions such as a revert need approval; Type 1 (irreversible) actions are prohibited in V1. System 1 / System 2 thinking decides escalation: fast fixed rules first, then a rubric with context and guidance; a gate (low score, new kind of incident, conflicting evidence) sends the incident to a human.
 - **E5 takeover:** a human can stop the platform or take over at any step.
 - **E6:** related alerts are grouped into one incident.
 - **E7:** a self-recovered incident is marked "recovered without action", watched, and still gets a root-cause report.
@@ -108,19 +108,27 @@ Focus rule: people, behaviour, outcomes. No technology/vendor names.
 
 | # | Item | Type | Owner | Validate when |
 |---|---|---|---|---|
-| E1 | On-call schedule exists and can be read | Assumption | Chirag | Layer 3 |
+| E1 | On-call schedule exists and can be read | Assumption | Dhanush | Layer 3 |
 | E2 | Past incidents and knowledge documents are accurate and current | Assumption | Irfan | Layer 10 |
-| E3 | Exact escalation rules, rubric content, and gate limits. Candidate for the System 2 rubric/gate: a schema-constrained decision model (e.g. GLiNER2.5-Decide; "Jev" family), named in Layer 9/10, not here (Layer 1 is technology-free). Use as one gate signal next to the rules, never the only decider; unsure output = escalate. Validate on our incident fixtures | Unknown | Dhanush (with Irfan for model choice) | Layer 9 / Layer 10 |
+| E3 | Exact escalation rules, rubric content, and gate limits. The method for the System 2 gate is chosen in Layer 9/10 (Layer 1 names no technology; candidate notes moved to `specs/layer-09-agent-architecture/prep-notes.md`) | Unknown | Dhanush (with Irfan for model choice) | Layer 9 / Layer 10 |
 | E4 | "Normal level" for the recovery check; low-traffic handling | Unknown | Rinisha | Layer 11 |
 | E6 | Alert-grouping rule | Unknown | Manish | Layer 7 |
 | E7 | Watch period for a self-recovered incident | Unknown | Dhanush | Layer 8 |
-| E8 | Secrets and personal data handling: check against threats | Decision | Chirag | Layer 5 |
+| E8 | Secrets and personal data handling: check against threats | Decision | Dhanush | Layer 5 |
 | E11 | Wrong-change rate and escalation rate: set targets | Decision | Irfan | Layer 12 |
 | F1 | Approval timeout values and backup approver order | Unknown | Rinisha | Layer 11 |
 | F2 | Platform cost per incident | Unknown | Irfan | Layer 10 |
+| M11 | Must self-approval be forbidden for SEV1? (separation of duties) | Unknown | Dhanush | Layer 5 |
 
 ### Where Claude and ChatGPT disagreed
-_(none yet — only one agent used so far)_
+_Pending: ChatGPT pass not done yet (review finding H2)._
 
-## Artifact 1 draft sections
-_(fill after all sections A–D are done)_
+
+## Review fixes applied (2026-11-13 review, team approved)
+
+- H1: revert also covers restoring the previous config version in the config store (same gate).
+- H2: acceptance check 4 un-ticked until the ChatGPT pass is done.
+- M10: model names removed from this Layer 1 log; moved to Layer 9 prep notes.
+- M11: self-approval rationale recorded; separation-of-duties check sent to Layer 5 (Dhanush).
+- M12: "decision policies" = Type 1/2 and System 1/2; "decision model" is reserved for the ML classifier (Layer 2+).
+- L1: "may not be the only cause" wording. L5: Chirag's items now owned by Dhanush. L6: A5 business-impact measure restored. L9: stale placeholder removed.
