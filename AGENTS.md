@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Guidance for any coding agent (Claude Code, Codex, Cursor, ChatGPT, and others) and for human contributors working in this repository. Claude Code reads it through `CLAUDE.md`, which imports this file.
+Guidance for any coding agent (Claude Code, Codex, Cursor, ChatGPT, and others) and for human contributors working in this repository. Claude Code reads it directly (checked with Claude Code 2.1.322), so the repo has no `CLAUDE.md`.
 
 ## What this repo is
 
