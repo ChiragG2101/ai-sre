@@ -3,7 +3,7 @@
 The **only** place where project status is kept. Other files (README, work split) hold no status.
 Update this file whenever a layer moves, a review runs, or an open item is closed.
 
-_Last updated: 2026-11-13_
+_Last updated: 2026-11-14_
 
 ## Layers
 
@@ -13,7 +13,7 @@ _Last updated: 2026-11-13_
 | 2 | Scope and Constraints | Team | Done — review fixes applied; ChatGPT pass pending (H2) | [log](specs/layer-02-scope-and-constraints/conversation-log.md) | [A2](specs/layer-02-scope-and-constraints/artifact-2-scope-and-constraints.html) | |
 | 3 | SRE Fundamentals | Dhanush (from Chirag) | Done — review fixes applied; ChatGPT pass pending (H2) | [log](specs/layer-03-sre-fundamentals/conversation-log.md) | [A3](specs/layer-03-sre-fundamentals/artifact-3-incident-and-evidence-catalog.html) | |
 | 4 | Requirements | Dhanush (from Chirag) | Done — ChatGPT pass pending (H2) | [log](specs/layer-04-requirements/conversation-log.md) | [A4](specs/layer-04-requirements/artifact-4-requirements-specification.html) | 34 requirements, 5 provisional milestones |
-| 5 | Threat Modeling | Dhanush (from Chirag) | Not started — inputs ready (A3, A4) | | | |
+| 5 | Threat Modeling | Chirag | In progress — started 2026-11-14 | | | Taken back from Dhanush. Inbound: M11 separation of duties, NFR-08 redaction, A1 E8, secret store (Q2.5) |
 | 6 | System Architecture | Manish | Not started | | | Needs A4, A5 |
 | 7 | Data, APIs and Events | Manish | Not started | | | Needs A4, A6 |
 | 8 | Workflows and State Machines | Dhanush | Not started — prep allowed (Sections A, D) | | | Needs A6, A7 |
@@ -63,4 +63,4 @@ Proposed fixes and approval boxes: [specs/reviews/2026-11-13-review-fixes.md](sp
 | Approval channel, timeouts, write-tool enforcement, sandbox design | Rinisha | Layer 11 |
 | Run the ChatGPT pass on A1–A3 decisions and record disagreements (H2) | Layer owners | Before submission |
 | Fill "Reviewed by" and "Date" on A1–A3 | Team | Before submission |
-| Rebalance load: Dhanush now owns L3–L5, L8–L9 (236 Qs) | Team | Before Layer 4 |
+| Rebalance load: Chirag took back L5; Dhanush still owns L3–L4, L8–L9 (208 Qs). Consider moving L12-A to Chirag | Team | Before Layer 8 |
